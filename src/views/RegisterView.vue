@@ -58,7 +58,7 @@ const formData = ref<FormData>({
 })
 
 const submitForm = () => {
-  // Aquí puedes realizar la lógica para enviar los datos del formulario
+  
   console.log(formData)
 }
 </script>

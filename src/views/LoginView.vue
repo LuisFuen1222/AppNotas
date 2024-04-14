@@ -34,7 +34,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import RegisterView from '@/views/RegisterView.vue'
 
 interface FormData {
   nombre: string
@@ -63,7 +62,7 @@ const submitForm = () => {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
+} 
 
 .app-img {
   margin-bottom: 20px;

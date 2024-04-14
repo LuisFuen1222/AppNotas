@@ -1,6 +1,23 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+import {  RouterView } from 'vue-router'
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyDUMWStPVDS9b5RxqCcHeC0fkpWmYgiscA",
+  authDomain: "appnotas-ccf47.firebaseapp.com",
+  projectId: "appnotas-ccf47",
+  storageBucket: "appnotas-ccf47.appspot.com",
+  messagingSenderId: "1060590747909",
+  appId: "1:1060590747909:web:deb8c617fb576fbf3d376c",
+  measurementId: "G-X9SKC064H8"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
 </script>
 
 <template>
