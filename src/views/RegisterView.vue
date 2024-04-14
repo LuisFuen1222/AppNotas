@@ -27,10 +27,12 @@
           required
           size="43"
         />
+        <div v-if="alertMessage" class="alert">
+        {{ alertMessage }} </div>
+        <div class="botones">
+        <button type="submit" class="register-button">Registrarte</button>
+      </div>
       </form>
-    </div>
-    <div class="botones">
-      <button type="submit" class="register-button">Registrarte</button>
     </div>
     <div class="Link-Register">
       <RouterLink to="/"> <p class="login-link">¿Ya tienes cuenta? Inicia sesión</p></RouterLink>
@@ -40,6 +42,9 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import firebase from '@/main'
+
+let alertMessage = ref('')
 
 interface FormData {
   nombre: string
@@ -57,9 +62,24 @@ const formData = ref<FormData>({
   confirmPassword: ''
 })
 
-const submitForm = () => {
-  
-  console.log(formData)
+const submitForm = async () => {
+  if (formData.value.password !== formData.value.confirmPassword) {
+    alertMessage.value = 'Las contraseñas no coinciden'
+    return
+  }
+  try {
+    const userCredential = await firebase.auth().createUserWithEmailAndPassword(formData.value.email, formData.value.password)
+    const user = userCredential.user
+    alertMessage.value = 'Usuario registrado con éxito!'
+    console.log('Usuario registrado con éxito:', user)
+  } catch (error) {
+    if ((error as any).code === 'auth/email-already-in-use') {
+      alertMessage.value = 'El correo electrónico ya está registrado'
+    } else {
+      alertMessage.value = 'Error al registrar el usuario'
+    }
+    console.error('Error al registrar el usuario:', error)
+  }
 }
 </script>
 
@@ -159,3 +179,4 @@ input {
 @media only screen and (min-width: 601px) {
 }
 </style>
+

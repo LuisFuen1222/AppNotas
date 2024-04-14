@@ -6,7 +6,20 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-import LoginView from './views/LoginView.vue'
+import firebase from 'firebase/compat/app';
+import 'firebase/compat/auth';
+
+const firebaseConfig = {
+    apiKey: "AIzaSyDUMWStPVDS9b5RxqCcHeC0fkpWmYgiscA",
+    authDomain: "appnotas-ccf47.firebaseapp.com",
+    projectId: "appnotas-ccf47",
+    storageBucket: "appnotas-ccf47.appspot.com",
+    messagingSenderId: "1060590747909",
+    appId: "1:1060590747909:web:deb8c617fb576fbf3d376c",
+    measurementId: "G-X9SKC064H8"
+  };
+
+firebase.initializeApp(firebaseConfig);
 
 const app = createApp(App)
 
@@ -14,3 +27,5 @@ app.use(createPinia())
 app.use(router)
 
 app.mount('#app')
+
+export default firebase;
