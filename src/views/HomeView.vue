@@ -26,8 +26,9 @@
     <div class="content">
       <div class="new-note" id="editor">
         <h2>Añadir Nota</h2>
-        <input placeholder="Título" v-model="nuevoTitulo" />
-        <textarea placeholder="Nota importante..." v-model="nuevaNota"></textarea>
+        <input type="text" v-model="tituloNota" placeholder="Título de la nota">
+        <div id="quill-editor"></div>
+        <button @click="guardarNota">Guardar Nota</button>
       </div>
       <div class="notes-list">
         <h3>Mis notas</h3>
@@ -37,8 +38,20 @@
 
 </template>
 <script setup type="ts">
+import { onMounted } from 'vue'
+import Quill from 'quill'
 
-  
+onMounted(() => {
+  new Quill('#quill-editor', {
+    theme: 'snow'  // Esto activa el tema 'snow'. Puedes cambiarlo a 'bubble' si prefieres ese tema.
+  })
+})
+
+const guardarNota = () => {
+  const contenidoNota = quill.getContents()
+  // Aquí puedes guardar el contenido de la nota en tu base de datos o donde prefieras.
+  console.log(contenidoNota)
+}
 </script>
 
 <style scoped>
