@@ -16,12 +16,12 @@
           required
           size="40"
         />
-      </form>
-    </div>
+        <div v-if="alertMessage" class="alert">
+        {{ alertMessage }} </div>
     <div class="botones">
-      <td>
-        <button type="submit" class="login-button">Entrar</button>
-      </td>
+      <button type="submit" class="login-button">Entrar</button>
+    </div>
+      </form>
     </div>
     <div class="Link-Register">
       <RouterLink to="/register">
@@ -33,27 +33,48 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { RouterLink, useRouter } from 'vue-router'
+import firebase from '@/main'
+
+let alertMessage = ref('')
 
 interface FormData {
-  nombre: string
-  apellido: string
   email: string
   password: string
-  confirmPassword: string
 }
 
 const formData = ref<FormData>({
-  nombre: '',
-  apellido: '',
   email: '',
-  password: '',
-  confirmPassword: ''
+  password: ''
 })
 
-const submitForm = () => {
-  // Aquí puedes realizar la lógica para enviar los datos del formulario
-  console.log(formData)
+const router = useRouter()
+
+
+const submitForm = async () => {
+  try {
+    await firebase.auth().signInWithEmailAndPassword(formData.value.email, formData.value.password)
+    router.push('/home') // Redirige al usuario a la página principal después de iniciar sesión
+  } catch (error: any) {
+    console.error('Error al iniciar sesión:', error)
+    switch (error.code) {
+      case 'auth/invalid-email':
+        alertMessage.value = 'El correo electrónico es inválido.'
+        break
+      case 'auth/user-disabled':
+        alertMessage.value = 'El usuario ha sido deshabilitado.'
+        break
+      case 'auth/user-not-found':
+        alertMessage.value = 'No se encontró ningún usuario con ese correo electrónico.'
+        break
+      case 'auth/wrong-password':
+        alertMessage.value = 'La contraseña es incorrecta.'
+        break
+      default:
+        alertMessage.value = 'Ocurrió un error al iniciar sesión.'
+        break
+    }
+  }
 }
 </script>
 
