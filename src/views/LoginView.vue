@@ -24,8 +24,8 @@
       </form>
     </div>
     <div class="Link-Register">
-      <RouterLink to="/register">
-        <p class="login-link">¿No tienes cuenta? Registrate</p></RouterLink
+      <RouterLink :to="{ name: 'register'}">
+        <p class="login-register">¿No tienes cuenta? Registrate</p></RouterLink
       >
     </div>
   </div>
@@ -106,8 +106,8 @@ const submitForm = async () => {
 
 .Link-Register {
   position: relative;
-  left: 490px;
-  top: -150px;
+  left: 500px;
+  top: -240px;
 }
 .Registrate {
   position: relative;
@@ -146,10 +146,11 @@ input {
   border-radius: 4px;
   cursor: pointer;
   position: relative;
-  top: -90px;
+  top: 170px;
+  left: -360px;
 }
 
-.login-link {
+.login-register {
   margin-top: 10px;
   color: navy;
   text-decoration: underline;
