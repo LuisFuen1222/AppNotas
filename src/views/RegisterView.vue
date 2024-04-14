@@ -35,7 +35,7 @@
       </form>
     </div>
     <div class="Link-Register">
-      <RouterLink to="/"> <p class="login-link">¿Ya tienes cuenta? Inicia sesión</p></RouterLink>
+      <RouterLink :to="{ name: 'login'}"> <p class="login-link">¿Ya tienes cuenta? Inicia sesión</p></RouterLink>
     </div>
   </div>
 </template>
@@ -43,6 +43,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import firebase from '@/main'
+import { RouterLink } from 'vue-router';
 
 let alertMessage = ref('')
 
@@ -163,9 +164,9 @@ input {
   color: navy;
   text-decoration: underline;
   cursor: pointer;
-  top: -90px;
+  top: 10px;
   position: relative;
-  left: 0px;
+  left: 20px;
 }
 
 @media (max-width: 800px) {
