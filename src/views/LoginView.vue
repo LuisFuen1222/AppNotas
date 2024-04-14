@@ -58,17 +58,11 @@ const submitForm = async () => {
   } catch (error: any) {
     console.error('Error al iniciar sesión:', error)
     switch (error.code) {
-      case 'auth/invalid-email':
-        alertMessage.value = 'El correo electrónico es inválido.'
+      case 'auth/invalid-credential':
+        alertMessage.value = 'El correo o la contraseña son invalidos'
         break
       case 'auth/user-disabled':
         alertMessage.value = 'El usuario ha sido deshabilitado.'
-        break
-      case 'auth/user-not-found':
-        alertMessage.value = 'No se encontró ningún usuario con ese correo electrónico.'
-        break
-      case 'auth/wrong-password':
-        alertMessage.value = 'La contraseña es incorrecta.'
         break
       default:
         alertMessage.value = 'Ocurrió un error al iniciar sesión.'
