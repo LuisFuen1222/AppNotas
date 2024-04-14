@@ -54,7 +54,7 @@ const router = useRouter()
 const submitForm = async () => {
   try {
     await firebase.auth().signInWithEmailAndPassword(formData.value.email, formData.value.password)
-    router.push('/home') // Redirige al usuario a la página principal después de iniciar sesión
+    router.push({ name: 'home' })// Redirige al usuario a la página principal después de iniciar sesión
   } catch (error: any) {
     console.error('Error al iniciar sesión:', error)
     switch (error.code) {

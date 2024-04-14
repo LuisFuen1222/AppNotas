@@ -70,7 +70,7 @@ const submitForm = async () => {
   try {
     const userCredential = await firebase.auth().createUserWithEmailAndPassword(formData.value.email, formData.value.password)
     const user = userCredential.user
-    alertMessage.value = 'Usuario registrado con éxito!'
+    alertMessage.value = 'Usuario registrado con éxito, ya puede iniciar sesión'
     console.log('Usuario registrado con éxito:', user)
   } catch (error) {
     if ((error as any).code === 'auth/email-already-in-use') {
