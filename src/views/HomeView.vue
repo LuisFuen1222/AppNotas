@@ -44,7 +44,6 @@
       </div>
     </div>
 
-    <br />
     <input v-model="search" placeholder="Buscar por título" class="buscador" />
     <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
     <br />
@@ -342,7 +341,7 @@ const toggleFavorite = (nota) => {
 
 .content {
   padding: 20px;
-  left: 190px;
+  left: 250px;
   position: relative;
   width: 100%;
 }
@@ -368,14 +367,14 @@ const toggleFavorite = (nota) => {
 
 .notes-list {
   background-color: white;
-  padding: 20px;
+  padding: 90px;
   display: grid;
-  gap: 25px;
+  gap: 80px;
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-around;
-  margin-left: 42.5%;
-  height: 50%;
-  width: 100%;
+  margin-left: 250px;
+  align-items: end;
+
 }
 
 .notes-list .card {
@@ -402,8 +401,11 @@ const toggleFavorite = (nota) => {
 }
 
 .card {
-  padding: 5%;
-  margin-top: 5%;
+  padding: 40px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  border-radius: 7px;
+  color: black;
 
 }
 
