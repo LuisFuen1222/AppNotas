@@ -1,39 +1,41 @@
 <template>
-  <div class="container">
-    <div class="sidebar" style="position: fixed;">
-      <h1 class="Menu">Menú</h1>
-      <ul class="links">
-        <br />
-        <div class="letras">
-          <RouterLink :to="{ name: 'home' }" style="color: #002b66;"> Notas </RouterLink>
-          <br />
-          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> Notas Favoritas </RouterLink>
-          <br />
-          <button class="Papelera">
-            <RouterLink :to="{ name: 'papelera' }" style="color: white;">
-              <h2>Papelera</h2>
-            </RouterLink>
-          </button>
-          <br />
-          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> Notas Archivadas </RouterLink>
-          <br />
-          <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
-        </div>
-        <br />
-      </ul>
-    </div>
-    <div>
-      <h1 class="titulo"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="20" height="20" viewBox="0 0 24 24" stroke-width="1.5" stroke="#00165F" fill="none" stroke-linecap="round" stroke-linejoin="round">
+  <input v-model="search" placeholder="Buscar por título" class="buscador" /> <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <header><h1 class="titulo"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
   <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
   <path d="M4 7l16 0" />
   <path d="M10 11l0 6" />
   <path d="M14 11l0 6" />
   <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
   <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-</svg>Notas en la papelera</h1>
+</svg> Eliminados</h1></header>
+
+  <div class="container">
+    <div class="sidebar" style="position: fixed;">
+      <h1 class="Menu">Menú</h1>
+      <ul class="links">
+        <br />
+        <div class="letras">
+          <RouterLink :to="{ name: 'home' }" style="color: #002b66;"><i class="bi bi-journal-text"></i>  Notas </RouterLink>
+          <br />
+          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> <i class="bi bi-star"></i>  Notas Favoritas </RouterLink>
+          <br />
+          <button class="Papelera">
+            <RouterLink :to="{ name: 'papelera' }" style="color: white;">
+              <h2><i class="bi bi-trash3"></i> Papelera</h2>
+            </RouterLink>
+          </button>
+          <br />
+          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> <i class="bi bi-archive"></i> Notas Archivadas </RouterLink>
+          <br />
+          <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
+        </div>
+        <br />
+      </ul>
     </div>
+
     <div class="notes-list">
-      <div v-for="nota in notas" :key="nota.id" class="card">
+      <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
 
           <button @click="restaurarNota(nota)"><svg xmlns="http://www.w3.org/2000/svg"
               class="icon icon-tabler icon-tabler-rotate" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5"
@@ -62,46 +64,70 @@
 <script setup type="ts">
 import { onMounted, ref } from 'vue'
 import Swal from 'sweetalert2'
-import { useRouter } from 'vue-router'
-import { db } from '../main'
+import { db, auth } from '../main'
+import { computed } from 'vue'
 
 const trashCollection = db.collection('trash');
 const notesCollection = db.collection('notes');
 
 const notas = ref([]);
-const router = useRouter();
+const search = ref('');
+let unsubscriber;
 
 onMounted(() => {
-  trashCollection.onSnapshot((snapshot) => {
-    notas.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  }, (error) => {
-    console.error('Error al obtener las notas: ', error);
-  });
-})
-
-const restaurarNota = (nota) => {
-  const trashRef = trashCollection.doc(nota.id);
-  trashRef.get().then((doc) => {
-    if (doc.exists) {
-      const noteRef = notesCollection.doc(nota.id);
-      noteRef.set(doc.data()).then(() => {
-        trashRef.delete().then(() => {
-          Swal.fire('Nota restaurada', '', 'success');
-        }).catch((error) => {
-          console.error('Error al eliminar la nota de la papelera: ', error);
-          Swal.fire('Error', 'Ocurrió un error al eliminar la nota de la papelera', 'error');
-        });
-      }).catch((error) => {
-        console.error('Error al restaurar la nota: ', error);
-        Swal.fire('Error', 'Ocurrió un error al restaurar la nota', 'error');
+  auth.onAuthStateChanged(user => {
+    if (user) {
+      const userId = user.uid;
+      trashCollection.where('user', '==', userId).onSnapshot((snapshot) => {
+        notas.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      }, (error) => {
+        console.error('Error al obtener las notas: ', error);
       });
     } else {
-      console.log('No se encontró la nota en la papelera');
-      Swal.fire('Error', 'No se encontró la nota en la papelera', 'error');
+      console.error('No user is currently signed in');
     }
-  }).catch((error) => {
-    console.error('Error al obtener la nota de la papelera: ', error);
-    Swal.fire('Error', 'Ocurrió un error al obtener la nota de la papelera', 'error');
+  });
+});
+
+const FiltrarNotas = computed(() => {
+  if (!search.value) {
+    return notas.value;
+  }
+  return notas.value.filter(nota => nota.title.toLowerCase().includes(search.value.toLowerCase()));
+});
+
+const restaurarNota = (nota) => {
+  Swal.fire({
+    title: '¿Estás seguro de que quieres restaurar esta nota de la papelera?',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, restaurar',
+    cancelButtonText: 'No, cancelar',
+  }).then((result) => {
+    if (result.isConfirmed) {
+      const trashRef = trashCollection.doc(nota.id);
+      trashRef.get().then((doc) => {
+        if (doc.exists) {
+          const noteRef = notesCollection.doc(nota.id);
+          noteRef.set(doc.data()).then(() => {
+            trashRef.delete().then(() => {
+              Swal.fire('Nota restaurada', '', 'success');
+            }).catch((error) => {
+              console.error('Error al eliminar la nota de la papelera: ', error);
+              Swal.fire('Error', 'Ocurrió un error al eliminar la nota de la papelera', 'error');
+            });
+          }).catch((error) => {
+            console.error('Error al restaurar la nota: ', error);
+            Swal.fire('Error', 'Ocurrió un error al restaurar la nota', 'error');
+          });
+        } else {
+          console.log('No se encontró la nota en la papelera');
+          Swal.fire('Error', 'No se encontró la nota en la papelera', 'error');
+        }
+      }).catch((error) => {
+        console.error('Error al obtener la nota de la papelera: ', error);
+        Swal.fire('Error', 'Ocurrió un error al obtener la nota de la papelera', 'error');
+      });
+    }
   });
 }
 
@@ -132,7 +158,9 @@ const eliminarNotaPermanentemente = (nota) => {
 
 <style scoped>
 .container {
-  display: block;
+  width: 100%;
+  padding: 0 15px;
+  margin: 0 auto;
 }
 
 .boton {
@@ -240,19 +268,81 @@ color: rgb(0, 22, 95);
   margin-bottom: 25px;
   margin-left: 300px;
   color: rgb(0, 22, 95);
+  font-size: 2rem;
+  position: fixed;
+  top: 10px;
+  left: 200px; 
 }
 
+.buscador {
+  margin-left: 300px;
+  margin-top: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  width: 300px;
+  top: 10px;
+  position: fixed;
+  left: 1200px;
+}
 
+.lupa {
+  right: 80px;
+  top: 25px;
+  font-size: 1.5rem;
+  position: absolute;
+  display: flex;
+}
 
+.butlupa {
+  background-color: #002559;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 15px 20px;
+  cursor: pointer;
+  border-radius: 100px;
+  margin-top: 0px;
+  margin-right: -20px;
+}
 
-@media (max-width: 800px) {
-  .element {
-    width: 100%;
-    background-color: blue;
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
   }
 }
 
-@media only screen and (max-width: 600px) {}
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
 
-@media only screen and (min-width: 601px) {}
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.sidebar {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    width: 25%;
+    position: fixed;
+  }
+
+}
+
+.bi-star{
+    color: yellow;
+}
+
 </style>

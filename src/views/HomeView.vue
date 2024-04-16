@@ -1,8 +1,8 @@
 <template>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <div class="container">
     <div class="sidebar" style="position: fixed;">
@@ -12,48 +12,58 @@
         <div class="letras">
           <button class="Notas">
             <RouterLink :to="{ name: 'home' }" style="color: white;">
+              <i class="bi bi-journal-text"></i>
               <h2>Notas</h2>
             </RouterLink>
           </button>
           <br />
-          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> Notas Favoritas </RouterLink>
+          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> <i class="bi bi-star"></i> Notas Favoritas
+          </RouterLink>
           <br />
-          <RouterLink :to="{ name: 'papelera' }" style="color: #002b66;"> Papelera </RouterLink>
+          <RouterLink :to="{ name: 'papelera' }" style="color: #002b66;"> <i class="bi bi-trash3"></i> Papelera
+          </RouterLink>
           <br />
-          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> Notas Archivadas </RouterLink>
+          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> <i class="bi bi-archive"></i> Notas
+            Archivadas </RouterLink>
           <br />
           <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
         </div>
         <br />
       </ul>
-      
     </div>
-    <div class="card">
-      <div class="content">
+
+    <div class="content">
+      <div class="card">
         <div class="new-note" id="editor">
           <h2>Añadir Nota</h2>
           <input v-model="tituloNota" placeholder="Título de la nota" />
           <div id="quill-editor"></div>
-          <br/>
+          <br />
           <button @click="guardarNota" class="boton">Guardar Nota</button>
         </div>
       </div>
     </div>
 
+    <br />
+    <input v-model="search" placeholder="Buscar por título" class="buscador" />
+    <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
+    <br />
+    <h3 class="MisNotas"> <i class="bi bi-journal-text"></i> Mis notas</h3>
     <div class="notes-list">
-      <h3>Mis notas</h3>
-      <div v-for="nota in notas" :key="nota.title" class="card">
-        <h4>{{ nota.title }}</h4>
+      <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
+        <div class="note-content">
+          <h4>{{ nota.title }}</h4>
+          <div class="icons">
+            <button @click="editarNota(nota)"><i class="bi-pencil-square"></i></button>
+            <button @click="borrarNota(nota)"><i class="bi bi-trash3"></i></button>
+            <button @click="toggleFavorite(nota)"><i class="bi" :class="nota.isFavorite ? 'bi-star-fill' : 'bi-star'"
+                :style="{ color: nota.isFavorite ? 'yellow' : 'black' }"></i></button>
+            <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
+          </div>
+        </div>
         <p>{{ nota.content }}</p>
-        <button @click="editarNota(nota)">Editar</button>
-        <br/>
-        <button @click="borrarNota(nota)">Borrar</button>
-        <br/>
-        <button @click="marcarComoFavorito(nota)">Favorito</button>
-        <br/>
       </div>
     </div>
-
   </div>
 
 </template>
@@ -65,33 +75,52 @@ import Quill from 'quill'
 import { db, auth } from '../main'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
-
-const notesCollection = db.collection('notes');
+import { computed } from 'vue'
 
 const tituloNota = ref('');
 const notas = ref([]);
+const notesCollection = db.collection('notes');
 const trashCollection = db.collection('trash');
 const favoritesCollection = db.collection('favorites');
+const archiveCollection = db.collection('archive');
 let quill = null;
 let notaActual = ref(null);
 const router = useRouter();
+const search = ref('');
+let unsubscriber;
 
 // Inicializar Quill
 onMounted(() => {
   quill = new Quill('#quill-editor', {
     theme: 'snow'
   })
-  notesCollection.onSnapshot((snapshot) => {
-    notas.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-  }, (error) => {
-    console.error('Error al obtener las notas: ', error);
+
+  unsubscriber = auth.onAuthStateChanged(user => {
+    if (user) {
+      notesCollection.where('user', '==', user.uid)
+        .onSnapshot((snapshot) => {
+          notas.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }, (error) => {
+          console.error('Error al obtener las notas: ', error);
+        });
+    } else {
+      console.error('No user is currently authenticated');
+    }
   });
 })
+
+// Buscador 
+const FiltrarNotas = computed(() => {
+  if (!search.value) {
+    return notas.value;
+  }
+  return notas.value.filter(nota => nota.title.toLowerCase().includes(search.value.toLowerCase()));
+});
 
 // Funcion de guardar nota
 const guardarNota = () => {
   const contenido = quill.getText().trim();
-  if(contenido === '') {
+  if (contenido === '') {
     Swal.fire('Error', 'El contenido de la nota no puede estar vacío', 'error');
     return;
   }
@@ -104,8 +133,8 @@ const guardarNota = () => {
       .then(() => {
         console.log('Nota actualizada exitosamente');
         tituloNota.value = '';
-        quill.setText(''); 
-        notaActual.value = null; 
+        quill.setText('');
+        notaActual.value = null;
       })
       .catch((error) => {
         console.error('Error al actualizar la nota: ', error);
@@ -114,12 +143,13 @@ const guardarNota = () => {
     // Crear una nueva nota
     notesCollection.add({
       title: tituloNota.value,
-      content: contenido
+      content: contenido,
+      user: auth.currentUser.uid
     })
       .then(() => {
         console.log('Nota guardada exitosamente');
         tituloNota.value = '';
-        quill.setText(''); 
+        quill.setText('');
       })
       .catch((error) => {
         console.error('Error al guardar la nota: ', error);
@@ -196,28 +226,28 @@ const cerrarSesion = () => {
   });
 }
 
-// Funcion de favoritos
-const marcarComoFavorito = (nota) => {
+// funcion de archivar nota
+const archivarNota = (nota) => {
   Swal.fire({
-    title: '¿Estás seguro de que quieres marcar esta nota como favorita?',
+    title: '¿Estás seguro de que quieres archivar esta nota?',
     showCancelButton: true,
-    confirmButtonText: 'Sí, marcar como favorita',
+    confirmButtonText: 'Sí, archivar',
     cancelButtonText: 'No, cancelar',
   }).then((result) => {
     if (result.isConfirmed) {
       const noteRef = notesCollection.doc(nota.id);
       noteRef.get().then((doc) => {
         if (doc.exists) {
-          const favoriteRef = favoritesCollection.doc(nota.id);
-          favoriteRef.set(doc.data()).then(() => {
+          const archiveRef = archiveCollection.doc(nota.id);
+          archiveRef.set(doc.data()).then(() => {
             noteRef.delete().then(() => {
-              console.log('Nota marcada como favorita');
-              router.push({ name: 'favoritos' });
+              console.log('Nota archivada');
+              router.push({ name: 'archivados' });
             }).catch((error) => {
               console.error('Error al eliminar la nota: ', error);
             });
           }).catch((error) => {
-            console.error('Error al marcar la nota como favorita: ', error);
+            console.error('Error al archivar la nota: ', error);
           });
         } else {
           console.log('No se encontró la nota');
@@ -229,14 +259,56 @@ const marcarComoFavorito = (nota) => {
   });
 }
 
+// Funcion de favoritos
+const marcarComoFavorito = (nota) => {
+  Swal.fire({
+    title: '¿Estás seguro de que quieres marcar esta nota como favorita?',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, marcar como favorita',
+    cancelButtonText: 'No, cancelar',
+  }).then((result) => {
+    if (result.isConfirmed) {
+    const noteRef = notesCollection.doc(nota.id);
+    noteRef.get().then((doc) => {
+      if (doc.exists) {
+        const favoriteRef = favoritesCollection.doc(nota.id);
+        favoriteRef.set({ ...doc.data(), isFavorite: true }).then(() => {
+          // Actualiza la nota original en la colección de notas
+          noteRef.update({ isFavorite: true });
+          console.log('Nota marcada como favorita');
+        }).catch((error) => {
+          console.error('Error al marcar la nota como favorita: ', error);
+        });
+      } else {
+        console.log('No se encontró la nota');
+      }
+    }).catch((error) => {
+      console.error('Error al obtener la nota: ', error);
+    });
+  }
+  });
+}
+
+const toggleFavorite = (nota) => {
+  nota.isFavorite = !nota.isFavorite;
+  if (nota.isFavorite) {
+    marcarComoFavorito(nota);
+  } else {
+    restaurarNota(nota);
+  }
+}
+
 </script>
 
 <style scoped>
 .container {
-  display: block;
+  width: 100%;
+  padding: 0 15px;
+  margin: 0 auto;
+
 }
 
-.boton{
+.boton {
   background-color: #6aa8ff;
   color: white;
   border: none;
@@ -270,7 +342,9 @@ const marcarComoFavorito = (nota) => {
 
 .content {
   padding: 20px;
-  flex: 1;
+  left: 190px;
+  position: relative;
+  width: 100%;
 }
 
 .new-note {
@@ -296,9 +370,19 @@ const marcarComoFavorito = (nota) => {
   background-color: white;
   padding: 20px;
   display: grid;
-  gap: 5px;
+  gap: 25px;
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-around;
+  margin-left: 42.5%;
+  height: 50%;
+  width: 100%;
+}
+
+.notes-list .card {
+  min-width: none;
+  width: 150%;
+  height: 100%;
+  margin-right: 20px;
 }
 
 .container .sidebar .Menu {
@@ -317,20 +401,95 @@ const marcarComoFavorito = (nota) => {
   white-space: nowrap;
 }
 
-.card{
+.card {
   padding: 5%;
   margin-top: 5%;
 
 }
 
-@media (max-width: 800px) {
-  .element {
-    width: 100%;
-    background-color: blue;
+.buscador {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+  left: 210px;
+  position: relative;
+  left: 700px;
+}
+
+.lupa {
+  right: 190px;
+  top: 500px;
+  font-size: 1.5rem;
+  position: absolute;
+  display: flex;
+
+}
+
+.MisNotas {
+  left: 210px;
+  position: relative;
+  top: -50px;
+}
+
+.butlupa {
+  background-color: #002559;
+  color: rgb(255, 255, 255);
+  border: none;
+  padding: 10px 15px;
+  cursor: pointer;
+  border-radius: 100px;
+  margin-top: -5px;
+  margin-left: -15px;
+}
+
+@media (min-width: 576px) {
+  .container {
+    max-width: 540px;
   }
 }
 
-@media only screen and (max-width: 600px) {}
+@media (min-width: 768px) {
+  .container {
+    max-width: 720px;
+  }
+}
 
-@media only screen and (min-width: 601px) {}
+@media (min-width: 992px) {
+  .container {
+    max-width: 960px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1140px;
+  }
+}
+
+.sidebar {
+  width: 100%;
+}
+
+@media (min-width: 992px) {
+  .sidebar {
+    width: 25%;
+    position: fixed;
+  }
+
+}
+
+.note-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.icons {
+  display: flex;
+}
+
+.bi-star{
+    color: yellow;
+}
 </style>
