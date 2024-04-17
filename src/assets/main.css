@@ -7,14 +7,6 @@
   font-weight: normal;
 }
 
-
-@media (hover: hover) {
-  a:hover {
-    background-color: #e4f4fd;
-    border-radius: 10px;
-  }
-}
-
 @media (min-width: 1024px) {
   body {
     display: flex;

@@ -1,35 +1,51 @@
 <template>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
-    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+    integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+    crossorigin="anonymous"
+  />
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+  />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+    rel="stylesheet"
+  />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <div class="container">
-    <div class="sidebar" style="position: fixed;">
-      <h1 class="Menu">Menú</h1>
-      <ul class="links">
-        <br />
-        <div class="letras">
-          <button class="Notas">
-            <RouterLink :to="{ name: 'home' }" style="color: white;">
-              <i class="bi bi-journal-text"></i>
-              <h2>Notas</h2>
-            </RouterLink>
-          </button>
-          <br />
-          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> <i class="bi bi-star"></i> Notas Favoritas
+    <div class="sidebar">
+      <div class="sidebar-header">
+        <h1>Notas</h1>
+      </div>
+
+      <div class="letras">
+        <button class="notas">
+          <RouterLink :to="{ name: 'home' }" class="enlace-router">
+            <i class="bi bi-journal-text"></i>
+            <h3 style="margin-left: 5px; margin: 0">Notas</h3>
           </RouterLink>
-          <br />
-          <RouterLink :to="{ name: 'papelera' }" style="color: #002b66;"> <i class="bi bi-trash3"></i> Papelera
+        </button>
+        <div class="exep-notas">
+          <RouterLink :to="{ name: 'favoritos' }" class="enlace-router">
+            <i class="bi bi-star"></i>
+            <span class="texto-enlace">Notas Favoritas</span>
           </RouterLink>
-          <br />
-          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> <i class="bi bi-archive"></i> Notas
-            Archivadas </RouterLink>
-          <br />
-          <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
+          <RouterLink :to="{ name: 'papelera' }" class="enlace-router">
+            <i class="bi bi-trash3"></i>
+            <span class="texto-enlace">Papelera</span>
+          </RouterLink>
+          <RouterLink :to="{ name: 'archivados' }" class="enlace-router">
+            <i class="bi bi-archive"></i>
+            <span class="texto-enlace">Notas Archivadas</span>
+          </RouterLink>
         </div>
-        <br />
-      </ul>
+        <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
+      </div>
     </div>
 
     <div class="content">
@@ -43,15 +59,6 @@
         </div>
       </div>
     </div>
-
-    <!--
-<input v-model="search" placeholder="Buscar por título" class="buscador" />
-    <div class="lupa">
-      <button class="butlupa"><i class="bi bi-search"></i></button>
-    </div>
-    <br/>
-    <h3><i class="bi bi-journal-text"></i> Mis notas</h3>
-    -->
 
     <div class="search-bar">
       <input v-model="search" placeholder="Buscar por título" class="buscador" />
@@ -69,8 +76,13 @@
           <div class="icons">
             <button @click="editarNota(nota)"><i class="bi-pencil-square"></i></button>
             <button @click="borrarNota(nota)"><i class="bi bi-trash3"></i></button>
-            <button @click="toggleFavorite(nota)"><i class="bi" :class="nota.isFavorite ? 'bi-star-fill' : 'bi-star'"
-                :style="{ color: nota.isFavorite ? 'yellow' : 'black' }"></i></button>
+            <button @click="toggleFavorite(nota)">
+              <i
+                class="bi"
+                :class="nota.isFavorite ? 'bi-star-fill' : 'bi-star'"
+                :style="{ color: nota.isFavorite ? 'yellow' : 'black' }"
+              ></i>
+            </button>
             <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
           </div>
         </div>
@@ -78,9 +90,7 @@
       </div>
     </div>
   </div>
-
 </template>
-
 
 <script setup type="ts">
 import { onMounted, ref } from 'vue'
@@ -304,15 +314,27 @@ const toggleFavorite = (nota) => {
     restaurarNota(nota);
   }
 }
-
 </script>
 
 <style scoped>
+.enlace-router {
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.texto-enlace {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #79747e;
+}
+
 .container {
   width: 100%;
   padding: 0 15px;
   margin: 0 auto;
-
 }
 
 .boton {
@@ -325,16 +347,31 @@ const toggleFavorite = (nota) => {
 }
 
 .sidebar {
-  background-color: #6aa8ff;
-  color: white;
-  padding: 150px;
-  width: 60px;
-  max-width: none;
-  height: 100%;
-  top: 80px;
-  left: -10px;
-  position: absolute;
-  margin-top: -80px;
+  background-color: #e3e8f8;
+  position: fixed;
+  top: 0;
+  left: 0;
+  padding: 30px;
+}
+
+.sidebar-header {
+  padding: 10px;
+  color: #203562;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-style: normal;
+}
+
+.letras i {
+  font-size: 1.5em;
+  margin-right: 10px;
+  margin-left: 10px;
+}
+
+.letras .notas i {
+  font-size: 1.25em;
+  margin-right: 10px;
+  margin-left: 10px;
 }
 
 .logout-btn {
@@ -342,9 +379,10 @@ const toggleFavorite = (nota) => {
   color: white;
   border: none;
   padding: 10px 20px;
-  margin-top: 20px;
+  margin-top: 75%;
   cursor: pointer;
   border-radius: 8px;
+  width: 100%
 }
 
 .content {
@@ -359,10 +397,15 @@ const toggleFavorite = (nota) => {
   padding: 20px;
 }
 
+.notas {
+  background-color: #203562;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+}
 
-.Notas {
-  background-color: rgb(0, 22, 95);
-  border-radius: 8px;
+.exep-notas i{
+  color: #79747e;
 }
 
 .new-note input,
@@ -392,17 +435,14 @@ const toggleFavorite = (nota) => {
   margin-right: 20px;
 }
 
-
 .note-content {
   display: flex;
-  
 }
 
 .icons {
   display: flex;
   justify-content: flex-end;
   margin-left: 25%;
-  
 }
 
 .container .sidebar .Menu {
@@ -413,26 +453,6 @@ const toggleFavorite = (nota) => {
   font-size: 3rem;
 }
 
-.letras {
-  font-size: 1.5rem;
-  margin-left: -130px;
-  display: grid;
-  text-align: justify;
-  white-space: nowrap;
-}
-
-.card {
-  padding: 5%;
-  margin-top: 5%;
-  padding: 40px;
-  border: 1px solid #ccc;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  border-radius: 7px;
-  color: black;
-  margin-inline: 10%;
-  width: 112.5%;
-}
-
 .butlupa {
   background-color: #002559;
   color: rgb(255, 255, 255);
@@ -441,7 +461,6 @@ const toggleFavorite = (nota) => {
   cursor: pointer;
   border-radius: 100px;
 }
-
 
 .search-bar {
   display: flex;
@@ -458,8 +477,6 @@ const toggleFavorite = (nota) => {
 .search-icon {
   display: flex;
 }
-
-
 
 @media (min-width: 576px) {
   .container {
@@ -492,12 +509,8 @@ const toggleFavorite = (nota) => {
 @media (min-width: 992px) {
   .sidebar {
     width: 25%;
+    height: 100%;
     position: fixed;
   }
-
-}
-
-.bi-star {
-  color: yellow;
 }
 </style>
