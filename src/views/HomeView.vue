@@ -44,10 +44,24 @@
       </div>
     </div>
 
-    <input v-model="search" placeholder="Buscar por título" class="buscador" />
-    <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
+    <!--
+<input v-model="search" placeholder="Buscar por título" class="buscador" />
+    <div class="lupa">
+      <button class="butlupa"><i class="bi bi-search"></i></button>
+    </div>
+    <br/>
+    <h3><i class="bi bi-journal-text"></i> Mis notas</h3>
+    -->
+
+    <div class="search-bar">
+      <input v-model="search" placeholder="Buscar por título" class="buscador" />
+      <div class="search-icon">
+        <button class="butlupa"><i class="bi bi-search"></i></button>
+      </div>
+    </div>
     <br />
-    <h3 class="MisNotas"> <i class="bi bi-journal-text"></i> Mis notas</h3>
+    <h3><i class="bi bi-journal-text"></i> Mis notas</h3>
+
     <div class="notes-list">
       <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
         <div class="note-content">
@@ -108,7 +122,6 @@ onMounted(() => {
   });
 })
 
-// Buscador 
 const FiltrarNotas = computed(() => {
   if (!search.value) {
     return notas.value;
@@ -116,7 +129,7 @@ const FiltrarNotas = computed(() => {
   return notas.value.filter(nota => nota.title.toLowerCase().includes(search.value.toLowerCase()));
 });
 
-// Funcion de guardar nota
+
 const guardarNota = () => {
   const contenido = quill.getText().trim();
   if (contenido === '') {
@@ -124,7 +137,7 @@ const guardarNota = () => {
     return;
   }
   if (notaActual.value) {
-    // Actualizar la nota existente
+
     notesCollection.doc(notaActual.value.id).update({
       title: tituloNota.value,
       content: contenido
@@ -139,7 +152,7 @@ const guardarNota = () => {
         console.error('Error al actualizar la nota: ', error);
       });
   } else {
-    // Crear una nueva nota
+
     notesCollection.add({
       title: tituloNota.value,
       content: contenido,
@@ -156,7 +169,6 @@ const guardarNota = () => {
   }
 }
 
-// Funcion de editar nota
 const editarNota = (nota) => {
   Swal.fire({
     title: '¿Estás seguro de que quieres editar esta nota?',
@@ -172,7 +184,6 @@ const editarNota = (nota) => {
   });
 }
 
-// Funcion de borrar nota
 const borrarNota = (nota) => {
   Swal.fire({
     title: '¿Estás seguro de que quieres mover esta nota a la papelera?',
@@ -205,7 +216,6 @@ const borrarNota = (nota) => {
   });
 }
 
-// Funcion de cerrar sesion
 const cerrarSesion = () => {
   Swal.fire({
     title: '¿Estás seguro de que quieres cerrar la sesión?',
@@ -225,7 +235,6 @@ const cerrarSesion = () => {
   });
 }
 
-// funcion de archivar nota
 const archivarNota = (nota) => {
   Swal.fire({
     title: '¿Estás seguro de que quieres archivar esta nota?',
@@ -258,7 +267,6 @@ const archivarNota = (nota) => {
   });
 }
 
-// Funcion de favoritos
 const marcarComoFavorito = (nota) => {
   Swal.fire({
     title: '¿Estás seguro de que quieres marcar esta nota como favorita?',
@@ -267,24 +275,24 @@ const marcarComoFavorito = (nota) => {
     cancelButtonText: 'No, cancelar',
   }).then((result) => {
     if (result.isConfirmed) {
-    const noteRef = notesCollection.doc(nota.id);
-    noteRef.get().then((doc) => {
-      if (doc.exists) {
-        const favoriteRef = favoritesCollection.doc(nota.id);
-        favoriteRef.set({ ...doc.data(), isFavorite: true }).then(() => {
-          // Actualiza la nota original en la colección de notas
-          noteRef.update({ isFavorite: true });
-          console.log('Nota marcada como favorita');
-        }).catch((error) => {
-          console.error('Error al marcar la nota como favorita: ', error);
-        });
-      } else {
-        console.log('No se encontró la nota');
-      }
-    }).catch((error) => {
-      console.error('Error al obtener la nota: ', error);
-    });
-  }
+      const noteRef = notesCollection.doc(nota.id);
+      noteRef.get().then((doc) => {
+        if (doc.exists) {
+          const favoriteRef = favoritesCollection.doc(nota.id);
+          favoriteRef.set({ ...doc.data(), isFavorite: true }).then(() => {
+            // Actualiza la nota original en la colección de notas
+            noteRef.update({ isFavorite: true });
+            console.log('Nota marcada como favorita');
+          }).catch((error) => {
+            console.error('Error al marcar la nota como favorita: ', error);
+          });
+        } else {
+          console.log('No se encontró la nota');
+        }
+      }).catch((error) => {
+        console.error('Error al obtener la nota: ', error);
+      });
+    }
   });
 }
 
@@ -341,7 +349,7 @@ const toggleFavorite = (nota) => {
 
 .content {
   padding: 20px;
-  left: 250px;
+  left: 190px;
   position: relative;
   width: 100%;
 }
@@ -349,8 +357,8 @@ const toggleFavorite = (nota) => {
 .new-note {
   background-color: white;
   padding: 20px;
-  margin-bottom: 20px;
 }
+
 
 .Notas {
   background-color: rgb(0, 22, 95);
@@ -366,15 +374,15 @@ const toggleFavorite = (nota) => {
 }
 
 .notes-list {
-  background-color: white;
-  padding: 90px;
+  padding: 20px;
   display: grid;
-  gap: 80px;
+  gap: 90px;
   grid-template-columns: repeat(3, 1fr);
   justify-content: space-around;
+  margin-left: 42.5%;
+  height: 50%;
+  width: 100%;
   margin-left: 250px;
-  align-items: end;
-
 }
 
 .notes-list .card {
@@ -382,6 +390,19 @@ const toggleFavorite = (nota) => {
   width: 150%;
   height: 100%;
   margin-right: 20px;
+}
+
+
+.note-content {
+  display: flex;
+  
+}
+
+.icons {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: 25%;
+  
 }
 
 .container .sidebar .Menu {
@@ -401,37 +422,15 @@ const toggleFavorite = (nota) => {
 }
 
 .card {
+  padding: 5%;
+  margin-top: 5%;
   padding: 40px;
   border: 1px solid #ccc;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   color: black;
-
-}
-
-.buscador {
-  width: 100%;
-  padding: 10px;
-  margin-bottom: 10px;
-  box-sizing: border-box;
-  left: 210px;
-  position: relative;
-  left: 700px;
-}
-
-.lupa {
-  right: 190px;
-  top: 500px;
-  font-size: 1.5rem;
-  position: absolute;
-  display: flex;
-
-}
-
-.MisNotas {
-  left: 210px;
-  position: relative;
-  top: -50px;
+  margin-inline: 10%;
+  width: 112.5%;
 }
 
 .butlupa {
@@ -441,9 +440,26 @@ const toggleFavorite = (nota) => {
   padding: 10px 15px;
   cursor: pointer;
   border-radius: 100px;
-  margin-top: -5px;
-  margin-left: -15px;
 }
+
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-left: 105%;
+  margin-top: 1%;
+}
+
+.search-bar input {
+  flex: 1;
+  margin: 15px;
+}
+
+.search-icon {
+  display: flex;
+}
+
+
 
 @media (min-width: 576px) {
   .container {
@@ -481,17 +497,7 @@ const toggleFavorite = (nota) => {
 
 }
 
-.note-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-}
-
-.icons {
-  display: flex;
-}
-
-.bi-star{
-    color: yellow;
+.bi-star {
+  color: yellow;
 }
 </style>
