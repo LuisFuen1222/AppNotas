@@ -1,41 +1,27 @@
 <template>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <div class="registration-container">
-    <div class="app-img">
-      <img src="https://cdn-icons-png.flaticon.com/512/3771/3771133.png" alt="" />
-    </div>
-    <div class="registration-form">
-      <h1 class="Registrate">Registrate</h1>
-      <h4 class="subtitulo">Comienza a escribir tus notas</h4>
-      <form @submit.prevent="submitForm">
-        <div class="form-group">
-          <input v-model="formData.nombre" placeholder="Nombre" required />
-          <input v-model="formData.apellido" placeholder="Apellidos" required />
-        </div>
-        <input v-model="formData.email" type="email" placeholder="Email" required size="43" />
-        <input
-          v-model="formData.password"
-          type="password"
-          placeholder="Contraseña"
-          required
-          size="43"
-        />
-        <input
-          v-model="formData.confirmPassword"
-          type="password"
-          placeholder="Confirmar Contraseña"
-          required
-          size="43"
-        />
-        <div v-if="alertMessage" class="alert">
-        {{ alertMessage }} </div>
-        <div class="botones">
-        <button type="submit" class="register-button">Registrarte</button>
+  <div class="registartion-container">
+    <div class="login-content">
+      <div class="registration-form">
+        <h1 class="Registrate">Registrate</h1>
+        <h4 class="subtitulo">Comienza a escribir tus notas</h4>
+        <form @submit.prevent="submitForm">
+          <div class="form-nombre">
+            <input v-model="formData.nombre" placeholder="Nombre" required />
+            <input v-model="formData.apellido" placeholder="Apellidos" required />
+          </div>
+          <div class="form-datos">
+            <input v-model="formData.email" type="email" placeholder="Email" required />
+            <input v-model="formData.password" type="password" placeholder="Contraseña" required />
+            <input v-model="formData.confirmPassword" type="password" placeholder="Confirmar Contraseña" required />
+          </div>
+          <div v-if="alertMessage" class="alert">
+            {{ alertMessage }}
+          </div>
+            <button type="submit" class="register-button">Registrarte</button>
+            <router-link :to="{ name: 'login'}" class="register-link">¿Ya tienes cuenta? Inicia sesión</router-link>
+        </form>
       </div>
-      </form>
-    </div>
-    <div class="Link-Register">
-      <RouterLink :to="{ name: 'login'}"> <p class="login-link">¿Ya tienes cuenta? Inicia sesión</p></RouterLink>
     </div>
   </div>
 </template>
@@ -73,113 +59,141 @@ const submitForm = async () => {
     const user = userCredential.user
     alertMessage.value = 'Usuario registrado con éxito!'
     console.log('Usuario registrado con éxito:', user)
-  } catch (error) {
-    if ((error as any).code === 'auth/email-already-in-use') {
-      alertMessage.value = 'El correo electrónico ya está registrado'
-    } else {
-      alertMessage.value = 'Error al registrar el usuario'
+  } catch (error: any) {
+    console.error('Error al registrarse:', error)
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        alertMessage.value = 'El correo electrónico ya está registrado'
+        break
+      case 'auth/weak-password':
+        alertMessage.value = 'La contraseña debe contener al menos 6 caracteres'
+        break
+      case 'auth/invalid-email':
+        alertMessage.value = 'No se ingreso un correo electronico valido'
+        break
+      default:
+        alertMessage.value = 'Ocurrió un error al registrarse.'
+        break
     }
-    console.error('Error al registrar el usuario:', error)
   }
+
 }
 </script>
 
-<style>
-.registration-container {
+<style scoped>
+/* Estilos generales */
+.registartion-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center; 
+  margin: 0; 
+  padding: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  background-image: url('../assets/background.jpg'); 
+  background-size: cover; 
+  background-position: center; 
 }
 
-.app-img {
-  margin-bottom: 20px;
-  position: sticky;
-  right: 200px;
-  top: 200px;
+.login-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
 }
 
 .registration-form {
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  position: relative;
-  left: 500px;
-  top: -250px;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #e3e8f8;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
 }
 
-.botones {
-  position: relative;
-  left: 500px;
-  top: 450px;
-}
-
-.Link-Register {
-  position: relative;
-  left: 490px;
-  top: -150px;
-}
 .Registrate {
-  position: relative;
-  top: -95px;
-  color: black;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
   font-weight: bold;
 }
+
 .subtitulo {
-  color: gray;
-  position: relative;
-  top: -25px;
+  margin-bottom: 20px;
+  color: #666;
 }
 
-.form-group {
+.form-nombre {
+  margin-bottom: 20px;
   display: flex;
   justify-content: space-between;
-  margin-bottom: 10px;
 }
 
-.form-group input {
+.form-nombre input {
   width: 48%;
-}
-
-input {
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  margin-bottom: 10px;
+  border-radius: 5px;
+  
+}
+
+.form-datos {
+  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-direction: column;
+}
+
+.form-datos input {
+  width: 95%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+
+.alert {
+  margin-bottom: 20px;
+  color: red;
 }
 
 .register-button {
-  padding: 10px;
-  background-color: navy;
+  padding: 10px 20px;
+  background-color: #203562;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  top: 170px;
-  position: relative;
-  left: -350px;
 }
 
-.login-link {
-  margin-top: 10px;
+
+.register-link {
+  margin-left: 87px;
   color: navy;
   text-decoration: underline;
   cursor: pointer;
-  top: 10px;
-  position: relative;
-  left: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-size: .90em;
 }
 
-@media (max-width: 800px) {
-  .element {
-    width: 100%;
-    background-color: blue;
+@media (max-width: 768px) {
+  .registration-form {
+    max-width: 300px;
+  }
+
+  .register-button {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .register-link {
+    text-align: center;
   }
 }
-
-@media only screen and (max-width: 600px) {
-}
-
-@media only screen and (min-width: 601px) {
-}
 </style>
-

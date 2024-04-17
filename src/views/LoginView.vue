@@ -1,32 +1,22 @@
 <template>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <div class="login-container">
-    <div>
-      <img src="../assets/Img-Login.jpeg" alt="" class="app-img" />
-    </div>
-    <div class="login-form">
-      <h1 class="Registrate">Login</h1>
-      <h4 class="subtitulo">Bienvenido.</h4>
-      <form @submit.prevent="submitForm">
-        <input v-model="formData.email" type="email" placeholder="Email" required size="40" />
-        <input
-          v-model="formData.password"
-          type="password"
-          placeholder="Contraseña"
-          required
-          size="40"
-        />
-        <div v-if="alertMessage" class="alert">
-        {{ alertMessage }} </div>
-    <div class="botones">
-      <button type="submit" class="login-button">Entrar</button>
-    </div>
-      </form>
-    </div>
-    <div class="Link-Register">
-      <RouterLink :to="{ name: 'register'}">
-        <p class="login-register">¿No tienes cuenta? Registrate</p></RouterLink
-      >
+    <div class="login-content">
+      <div class="login-form">
+        <h1 class="nombre">App de Notas</h1>
+        <h2 class="titulo">Login</h2>
+        <h4 class="subtitulo">Bienvenido.</h4>
+        <form @submit.prevent="submitForm">
+          <div class="form-group">
+            <input v-model="formData.email" type="email" placeholder="Email" required  />
+            <input v-model="formData.password" type="password" placeholder="Contraseña" required  />
+          </div>
+          <div v-if="alertMessage" class="alert">
+            {{ alertMessage }}
+          </div>
+            <button type="submit" class="login-button">Entrar</button>
+            <router-link :to="{ name: 'register'}" class="login-register">¿No tienes cuenta? Regístrate</router-link>
+        </form>
+      </div>
     </div>
   </div>
 </template>
@@ -50,7 +40,6 @@ const formData = ref<FormData>({
 
 const router = useRouter()
 
-
 const submitForm = async () => {
   try {
     await firebase.auth().signInWithEmailAndPassword(formData.value.email, formData.value.password)
@@ -59,7 +48,7 @@ const submitForm = async () => {
     console.error('Error al iniciar sesión:', error)
     switch (error.code) {
       case 'auth/invalid-credential':
-        alertMessage.value = 'El correo o la contraseña son invalidos'
+        alertMessage.value = 'El correo o la contraseña son inválidos'
         break
       case 'auth/user-disabled':
         alertMessage.value = 'El usuario ha sido deshabilitado.'
@@ -72,100 +61,113 @@ const submitForm = async () => {
 }
 </script>
 
-<style>
+<style scoped>
+/* Estilos generales */
 .login-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-} 
+  justify-content: center; 
+  margin: 0; 
+  padding: 0; 
+  width: 100vw; 
+  height: 100vh; 
+  background-image: url('../assets/background.jpg'); 
+  background-size: cover; 
+  background-position: center; 
+}
 
-.app-img {
-  margin-bottom: 20px;
-  position: relative;
-  right: 200px;
-  top: 200px;
-  border-radius: 150px;
-  width: 600px;
-  height: 600px;
+
+.login-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  max-width: 1200px;
+}
+
+.login-content h1{
+  text-align: center;
 }
 
 .login-form {
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  position: relative;
-  left: 500px;
-  top: -250px;
+  width: 100%;
+  max-width: 400px;
+  padding: 20px;
+  background-color: #e3e8f8;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
 }
 
-.botones {
-  position: relative;
-  left: 500px;
-  top: -150px;
-}
-
-.Link-Register {
-  position: relative;
-  left: 500px;
-  top: -230px;
-}
-.Registrate {
-  position: relative;
-  top: -35px;
-  color: black;
+.nombre{
+  margin-bottom: 30px;
+  color: #203562;
+  font-size: 30px;
   font-weight: bold;
 }
+
+.titulo {
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 24px;
+  font-weight: bold;
+}
+
 .subtitulo {
-  color: gray;
-  position: relative;
-  top: -25px;
+  margin-bottom: 5px;
+  color: #666;
 }
 
 .form-group {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  flex-direction: column;
+  
 }
 
-.form-group input {
-  width: 48%;
-}
-
-input {
+.form-group input{
+  width: 95%;
   padding: 10px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 5px;
   margin-bottom: 10px;
+}
+
+.alert {
+  margin-bottom: 20px;
+  color: red;
 }
 
 .login-button {
-  padding: 10px;
-  background-color: navy;
+  padding: 10px 20px;
+  background-color: #203562;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
   cursor: pointer;
-  position: relative;
-  top: 170px;
-  left: -360px;
 }
 
 .login-register {
-  margin-top: 10px;
+  margin-left: 127px;
   color: navy;
   text-decoration: underline;
   cursor: pointer;
+  font-family: 'Poppins', sans-serif;
+  font-style: normal;
+  font-size: .90em;
 }
-@media (max-width: 800px) {
-  .element {
-    width: 100%;
-    background-color: blue;
+
+
+@media (max-width: 768px) {
+  .login-form {
+    max-width: 300px;
   }
-}
 
-@media only screen and (max-width: 600px) {
-}
-
-@media only screen and (min-width: 601px) {
+  .login-register {
+    margin-left: 0; 
+    margin-top: 10px; 
+    text-align: center; 
+  }
 }
 </style>
