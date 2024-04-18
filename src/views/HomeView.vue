@@ -4,25 +4,24 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
     integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
     crossorigin="anonymous"
-  />
+    />
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
   <link
     rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-  />
+    />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link
     href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
     rel="stylesheet"
-  />
+    />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <div class="container">
     <div class="sidebar">
       <div class="sidebar-header">
         <h1>Notas</h1>
       </div>
-
       <div class="letras">
         <button class="notas">
           <RouterLink :to="{ name: 'home' }" class="enlace-router">
@@ -47,46 +46,49 @@
         <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
       </div>
     </div>
-
-    <div class="content">
-      <div class="card">
-        <div class="new-note" id="editor">
-          <h2>Añadir Nota</h2>
-          <input v-model="tituloNota" placeholder="Título de la nota" />
-          <div id="quill-editor"></div>
-          <br />
-          <button @click="guardarNota" class="boton">Guardar Nota</button>
+    <div class="main-content">
+      <div class="content">
+        <div class="card">
+          <div class="new-note" id="editor">
+            <h2>Añadir Nota</h2>
+            <input v-model="tituloNota" placeholder="Título de la nota" />
+            <div id="quill-editor"></div>
+            <br />
+            <button @click="guardarNota" class="boton">Guardar Nota</button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="search-bar">
-      <input v-model="search" placeholder="Buscar por título" class="buscador" />
-      <div class="search-icon">
-        <button class="butlupa"><i class="bi bi-search"></i></button>
+      <div class="container-searchbar">
+        <div class="search-bar">
+          <input v-model="search" placeholder="Buscar por título" class="buscador" />
+          <div class="search-icon">
+            <button class="butlupa"><i class="bi bi-search"></i></button>
+          </div>
+        </div>   
       </div>
-    </div>
-    <br />
-    <h3><i class="bi bi-journal-text"></i> Mis notas</h3>
 
-    <div class="notes-list">
-      <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
-        <div class="note-content">
-          <h4>{{ nota.title }}</h4>
-          <div class="icons">
-            <button @click="editarNota(nota)"><i class="bi-pencil-square"></i></button>
-            <button @click="borrarNota(nota)"><i class="bi bi-trash3"></i></button>
-            <button @click="toggleFavorite(nota)">
+      <div class="notes-list">
+        <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
+          <div class="note-content">
+            <div class="title-icons">
+            <h4>{{ nota.title }}</h4>
+            <div class="icons">
+              <button @click="toggleFavorite(nota)">
               <i
                 class="bi"
                 :class="nota.isFavorite ? 'bi-star-fill' : 'bi-star'"
                 :style="{ color: nota.isFavorite ? 'yellow' : 'black' }"
-              ></i>
-            </button>
-            <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
+                ></i>
+              </button>
+              <button @click="editarNota(nota)"><i class="bi bi-pencil"></i></button>
+              <button @click="borrarNota(nota)"><i class="bi bi-trash3"></i></button>
+              <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
+            </div>
+            </div>
           </div>
+          <p>{{ nota.content }}</p>
         </div>
-        <p>{{ nota.content }}</p>
       </div>
     </div>
   </div>
@@ -317,36 +319,17 @@ const toggleFavorite = (nota) => {
 </script>
 
 <style scoped>
-.enlace-router {
-  color: white;
-  display: flex;
-  align-items: center;
-  padding: 0.75rem;
-}
-
-.texto-enlace {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  color: #79747e;
-}
 
 .container {
   width: 100%;
   padding: 0 15px;
   margin: 0 auto;
-}
-
-.boton {
-  background-color: #6aa8ff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  padding: 10px 20px;
-  border-radius: 8px;
+  overflow-y: auto;
 }
 
 .sidebar {
+  height: 100%;
+  width: 25%;
   background-color: #e3e8f8;
   position: fixed;
   top: 0;
@@ -362,6 +345,10 @@ const toggleFavorite = (nota) => {
   font-style: normal;
 }
 
+.main-content{
+  position: absolute;
+}
+
 .letras i {
   font-size: 1.5em;
   margin-right: 10px;
@@ -372,6 +359,31 @@ const toggleFavorite = (nota) => {
   font-size: 1.25em;
   margin-right: 10px;
   margin-left: 10px;
+}
+
+.notas {
+  background-color: #203562;
+  border-radius: 10px;
+  padding: 10px;
+  width: 100%;
+}
+
+.exep-notas i{
+  color: #79747e;
+}
+
+.enlace-router {
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+}
+
+.texto-enlace {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  color: #79747e;
 }
 
 .logout-btn {
@@ -386,10 +398,11 @@ const toggleFavorite = (nota) => {
 }
 
 .content {
-  padding: 20px;
-  left: 190px;
-  position: relative;
-  width: 100%;
+  margin-left: 15%;
+  margin-top: 3%;
+  position: absolute;
+  width: 75%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .new-note {
@@ -397,15 +410,10 @@ const toggleFavorite = (nota) => {
   padding: 20px;
 }
 
-.notas {
-  background-color: #203562;
-  border-radius: 10px;
-  padding: 10px;
-  width: 100%;
-}
-
-.exep-notas i{
-  color: #79747e;
+.new-note h2{
+  font-family: "Poppins", sans-serif;
+  font-weight: 600;
+  font-style: normal;
 }
 
 .new-note input,
@@ -416,41 +424,36 @@ const toggleFavorite = (nota) => {
   box-sizing: border-box;
 }
 
-.notes-list {
-  padding: 20px;
-  display: grid;
-  gap: 90px;
-  grid-template-columns: repeat(3, 1fr);
-  justify-content: space-around;
-  margin-left: 42.5%;
-  height: 50%;
-  width: 100%;
-  margin-left: 250px;
+.boton {
+  background-color: #203562;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 8px;
 }
 
-.notes-list .card {
-  min-width: none;
-  width: 150%;
-  height: 100%;
-  margin-right: 20px;
-}
-
-.note-content {
+.container-searchbar{
   display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30%;
 }
 
-.icons {
+.search-bar {
   display: flex;
-  justify-content: flex-end;
-  margin-left: 25%;
+  align-items: center;
+  margin-left: 77%;
 }
 
-.container .sidebar .Menu {
-  align-items: end;
-  position: relative;
-  left: -60px;
-  top: -20px;
-  font-size: 3rem;
+.search-bar input.buscador {
+  flex: 1;
+  margin: 15px;
+  border-radius: 20px;
+}
+
+.search-icon {
+  display: flex;
 }
 
 .butlupa {
@@ -462,55 +465,49 @@ const toggleFavorite = (nota) => {
   border-radius: 100px;
 }
 
-.search-bar {
+.notes-list {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+  margin-left: 13.5%;
+}
+
+.notes-list .card {
+  padding: 20px;
+  width: calc(25% - 20px);
+  max-height: 20%;
+  margin-right: 10px;
+  margin-bottom: 20px;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.notes-list .card .icons button {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.note-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+
+.title-icons {
   display: flex;
   align-items: center;
-  margin-left: 105%;
-  margin-top: 1%;
+  justify-content: space-between;
 }
 
-.search-bar input {
-  flex: 1;
-  margin: 15px;
-}
-
-.search-icon {
+.icons i{
   display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  box-shadow: none;
 }
 
-@media (min-width: 576px) {
-  .container {
-    max-width: 540px;
-  }
-}
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 720px;
-  }
-}
-
-@media (min-width: 992px) {
-  .container {
-    max-width: 960px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1140px;
-  }
-}
-
-.sidebar {
-  width: 100%;
-}
-
-@media (min-width: 992px) {
-  .sidebar {
-    width: 25%;
-    height: 100%;
-    position: fixed;
-  }
-}
 </style>
