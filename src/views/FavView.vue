@@ -1,6 +1,5 @@
 <template>
     <input v-model="search" placeholder="Buscar por título" class="buscador" /> <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <header><h1 class="titulo"> <i class="bi bi-star"></i> Mis Favoritos</h1></header>
     <div class="container">
       <div class="sidebar" style="position: fixed;">
