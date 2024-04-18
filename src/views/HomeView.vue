@@ -375,10 +375,11 @@ const toggleFavorite = (nota) => {
 }
 
 .enlace-router {
-  color: white;
   display: flex;
   align-items: center;
   padding: 0.75rem;
+  color: white;
+  border-radius: 15px
 }
 
 .texto-enlace {

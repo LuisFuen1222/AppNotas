@@ -2,32 +2,9 @@
     <input v-model="search" placeholder="Buscar por título" class="buscador" /> <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
     <header><h1 class="titulo"> <i class="bi bi-archive"></i> Archivados</h1></header>
     <div class="container">
-      <div class="sidebar" style="position: fixed;">
-        <h1 class="Menu">Menú</h1>
-        <ul class="links">
-          <br />
-          <div class="letras">
-            <RouterLink :to="{ name: 'home' }" style="color: #002b66;"><i class="bi bi-journal-text"></i>  Notas </RouterLink>
-            <br />
-            <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> <i class="bi bi-star"></i>  Notas Favoritas </RouterLink>
-            <br />
-              <RouterLink :to="{ name: 'papelera' }" style="color: #002b66;">
-                <i class="bi bi-trash3"></i> Papelera
-              </RouterLink>
-            <br />
-            <button class="Papelera">
-            <RouterLink :to="{ name: 'archivados' }" style="color: white;"> <h2><i class="bi bi-archive"></i> Notas Archivadas</h2> </RouterLink>
-            </button>
-            <br />
-            <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
-          </div>
-          <br />
-        </ul>
-      </div>
-  
+      <Sidebar/>
       <div class="notes-list">
         <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
-  
             <button @click="restaurarNota(nota)"><i class="bi bi-arrow-clockwise"></i></button>
             <button @click="moverNotaATrash(nota)"><i class="bi bi-trash3"></i></button>  
           <h3>{{ nota.title }}</h3>
@@ -39,6 +16,7 @@
   </template>
   
   <script setup type="ts">
+  import Sidebar from './Sidebar.vue'
   import { onMounted, ref } from 'vue'
   import Swal from 'sweetalert2'
   import { db, auth } from '../main'
@@ -179,34 +157,6 @@
     border-radius: 8px;
   }
   
-  .sidebar {
-    background-color: #6aa8ff;
-    color: white;
-    padding: 150px;
-    width: 60px;
-    max-width: none;
-    height: 100%;
-    top: 80px;
-    left: -10px;
-    position: absolute;
-    margin-top: -80px;
-  }
-  
-  .Papelera {
-    background-color: rgb(0, 22, 95);
-    border-radius: 8px;
-}
-  
-  .logout-btn {
-    background-color: #e53935;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    margin-top: 20px;
-    cursor: pointer;
-    border-radius: 8px;
-  }
-  
   .content {
     padding: 20px;
     flex: 1;
@@ -246,14 +196,6 @@
     left: -60px;
     top: -20px;
     font-size: 3rem;
-  }
-  
-  .letras {
-    font-size: 1.5rem;
-    margin-left: -130px;
-    display: grid;
-    text-align: justify;
-    white-space: nowrap;
   }
   
   .card {
