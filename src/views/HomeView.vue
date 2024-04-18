@@ -69,7 +69,7 @@
             </div>
             </div>
           </div>
-          <p v-html="nota.content"></p>
+          <p>{{ nota.content }}</p>
           <div>{{ formatFecha(nota.date) }}</div>
         </div>
       </div>
@@ -143,43 +143,43 @@ const FiltrarNotas = computed(() => {
 
 
 const guardarNota = () => {
-  const contenido = quill.root.innerHTML.trim();
-
+  const contenido = quill.getText().trim();
   if (contenido === '') {
     Swal.fire('Error', 'El contenido de la nota no puede estar vacío', 'error');
     return;
   }
-
   if (notaActual.value) {
+
     notesCollection.doc(notaActual.value.id).update({
       title: tituloNota.value,
       content: contenido,
       date: Date.now()
     })
-    .then(() => {
-      console.log('Nota actualizada exitosamente');
-      tituloNota.value = '';
-      quill.setText('');
-      notaActual.value = null;
-    })
-    .catch((error) => {
-      console.error('Error al actualizar la nota: ', error);
-    });
+      .then(() => {
+        console.log('Nota actualizada exitosamente');
+        tituloNota.value = '';
+        quill.setText('');
+        notaActual.value = null;
+      })
+      .catch((error) => {
+        console.error('Error al actualizar la nota: ', error);
+      });
   } else {
+
     notesCollection.add({
       title: tituloNota.value,
-      content: contenido, 
+      content: contenido,
       user: auth.currentUser.uid,
       date: Date.now()
     })
-    .then(() => {
-      console.log('Nota guardada exitosamente');
-      tituloNota.value = '';
-      quill.setText('');
-    })
-    .catch((error) => {
-      console.error('Error al guardar la nota: ', error);
-    });
+      .then(() => {
+        console.log('Nota guardada exitosamente');
+        tituloNota.value = '';
+        quill.setText('');
+      })
+      .catch((error) => {
+        console.error('Error al guardar la nota: ', error);
+      });
   }
 }
 
