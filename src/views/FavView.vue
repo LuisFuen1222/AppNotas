@@ -14,6 +14,8 @@
               :style="{ color: nota.isFavorite ? 'yellow' : 'black' }"></i>
           </button></button>
         <button @click="moverNotaATrash(nota)"><i class="bi bi-trash3"></i></button>
+        <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
+        <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
         <h3>{{ nota.title }}</h3>
         <p>{{ nota.content }}</p>
         <div>{{ formatFecha(nota.date) }}</div>
@@ -29,6 +31,8 @@ import { db, auth } from '../main'
 import { computed } from 'vue'
 import { format } from 'date-fns';
 import Sidebar from './Sidebar.vue';
+import { jsPDF } from "jspdf";
+
 
 const trashCollection = db.collection('trash');
 const notesCollection = db.collection('notes');
@@ -37,6 +41,19 @@ const favoritesCollection = db.collection('favorites');
 const notas = ref([]);
 const search = ref('');
 let unsubscriber;
+
+const exportarNotaAPdf = (nota) => {
+  if (nota === null) {
+    console.log('Error: La nota es null');
+    return;
+  }
+  const doc = new jsPDF();
+  const title = nota.title.replace(/\n/g, ' ');
+  const content = nota.content.replace(/\n/g, ' ');
+  doc.text(title, 10, 10);
+  doc.text(content, 10, 20);
+  doc.save(`${title}.pdf`);
+}
 
 const formatFecha = (fecha) => {
   if (fecha) {

@@ -43,6 +43,7 @@
               <button @click="editarNota(nota)"><i class="bi bi-pencil"></i></button>
               <button @click="borrarNota(nota)"><i class="bi bi-trash3"></i></button>
               <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
+              <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
             </div>
             </div>
           </div>
@@ -63,6 +64,7 @@ import { useRouter } from 'vue-router'
 import { computed } from 'vue'
 import { format } from 'date-fns';
 import Sidebar from './Sidebar.vue'
+import { jsPDF } from "jspdf";
 
 const tituloNota = ref('');
 const notas = ref([]);
@@ -76,7 +78,18 @@ const router = useRouter();
 const search = ref('');
 let unsubscriber;
 
-
+const exportarNotaAPdf = (nota) => {
+  if (nota === null) {
+    console.log('Error: La nota es null');
+    return;
+  }
+  const doc = new jsPDF();
+  const title = nota.title.replace(/\n/g, ' ');
+  const content = nota.content.replace(/\n/g, ' ');
+  doc.text(title, 10, 10);
+  doc.text(content, 10, 20);
+  doc.save(`${title}.pdf`);
+}
 const formatFecha = (fecha) => {
   if (fecha) {
     const dateObject = new Date(fecha);
