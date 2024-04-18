@@ -117,9 +117,18 @@ const search = ref('');
 let unsubscriber;
 
 
-let formatFecha = (fecha) => {
-  let dateObject = new Date(fecha);
-  return format(dateObject, 'dd/MM/yyyy HH:mm');
+const formatFecha = (fecha) => {
+  if (fecha) {
+    const dateObject = new Date(fecha);
+    if (isNaN(dateObject.getTime())) {
+      console.log('Fecha no válida: ', fecha);
+      return '';
+    }
+    return format(dateObject, 'dd/MM/yyyy HH:mm');
+  } else {
+    console.log('Fecha no proporcionada');
+    return '';
+  }
 }
 
 // Inicializar Quill
