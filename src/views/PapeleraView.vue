@@ -53,8 +53,8 @@
               <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
             </svg></button>
 
-        <h3>{{ nota.title }}</h3>
-        <p>{{ nota.content }}</p>
+        <h3 v-html="nota.title"></h3>
+        <div v-html="nota.content"></div>
         <div>{{ formatFecha(nota.date) }}</div>
       </div>
     </div>
