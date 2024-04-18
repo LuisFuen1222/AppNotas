@@ -33,6 +33,7 @@
             <button @click="moverNotaATrash(nota)"><i class="bi bi-trash3"></i></button>  
           <h3>{{ nota.title }}</h3>
           <p>{{ nota.content }}</p>
+          <div>{{ formatFecha(nota.date) }}</div>
         </div>
       </div>
     </div>
@@ -43,6 +44,7 @@
   import Swal from 'sweetalert2'
   import { db, auth } from '../main'
   import { computed } from 'vue'
+  import { format } from 'date-fns'
   
   const trashCollection = db.collection('trash');
   const notesCollection = db.collection('notes');
@@ -52,6 +54,20 @@
   const search = ref('');
   let unsubscriber;
   
+
+  const formatFecha = (fecha) => {
+  if (fecha) {
+    const dateObject = new Date(fecha);
+    if (isNaN(dateObject.getTime())) {
+      console.log('Fecha no válida: ', fecha);
+      return '';
+    }
+    return format(dateObject, 'dd/MM/yyyy HH:mm');
+  } else {
+    console.log('Fecha no proporcionada');
+    return '';
+  }
+}
   onMounted(() => {
     auth.onAuthStateChanged(user => {
       if (user) {
