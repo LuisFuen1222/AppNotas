@@ -1,33 +1,6 @@
 <template>
   <div class="container">
-    <div class="sidebar">
-      <div class="sidebar-header">
-        <h1>Notas</h1>
-      </div>
-      <div class="letras">
-        <button class="notas">
-          <RouterLink :to="{ name: 'home' }" class="enlace-router">
-            <i class="bi bi-journal-text"></i>
-            <h3 style="margin-left: 5px; margin: 0">Notas</h3>
-          </RouterLink>
-        </button>
-        <div class="exep-notas">
-          <RouterLink :to="{ name: 'favoritos' }" class="enlace-router">
-            <i class="bi bi-star"></i>
-            <span class="texto-enlace">Notas Favoritas</span>
-          </RouterLink>
-          <RouterLink :to="{ name: 'papelera' }" class="enlace-router">
-            <i class="bi bi-trash3"></i>
-            <span class="texto-enlace">Papelera</span>
-          </RouterLink>
-          <RouterLink :to="{ name: 'archivados' }" class="enlace-router">
-            <i class="bi bi-archive"></i>
-            <span class="texto-enlace">Notas Archivadas</span>
-          </RouterLink>
-        </div>
-        <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
-      </div>
-    </div>
+    <Sidebar/>
     <div class="main-content">
       <div class="content">
         <div class="card">
@@ -84,7 +57,8 @@ import { db, auth } from '../main'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
-import { format } from 'date-fns'
+import { format } from 'date-fns';
+import Sidebar from './Sidebar.vue'
 
 const tituloNota = ref('');
 const notas = ref([]);
@@ -113,7 +87,6 @@ const formatFecha = (fecha) => {
   }
 }
 
-// Inicializar Quill
 onMounted(() => {
   quill = new Quill('#quill-editor', {
     theme: 'snow'
@@ -294,7 +267,6 @@ const marcarComoFavorito = (nota) => {
         if (doc.exists) {
           const favoriteRef = favoritesCollection.doc(nota.id);
           favoriteRef.set({ ...doc.data(), isFavorite: true }).then(() => {
-            // Actualiza la nota original en la colección de notas
             noteRef.update({ isFavorite: true });
             console.log('Nota marcada como favorita');
           }).catch((error) => {
@@ -329,75 +301,8 @@ const toggleFavorite = (nota) => {
   overflow-y: auto;
 }
 
-.sidebar {
-  height: 100%;
-  width: 25%;
-  background-color: #e3e8f8;
-  position: fixed;
-  top: 0;
-  left: 0;
-  padding: 30px;
-}
-
-.sidebar-header {
-  padding: 10px;
-  color: #203562;
-  font-family: 'Poppins', sans-serif;
-  font-weight: 600;
-  font-style: normal;
-}
-
 .main-content{
   position: absolute;
-}
-
-.letras i {
-  font-size: 1.5em;
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-.letras .notas i {
-  font-size: 1.25em;
-  margin-right: 10px;
-  margin-left: 10px;
-}
-
-.notas {
-  background-color: #203562;
-  border-radius: 10px;
-  padding: 10px;
-  width: 100%;
-}
-
-.exep-notas i{
-  color: #79747e;
-}
-
-.enlace-router {
-  display: flex;
-  align-items: center;
-  padding: 0.75rem;
-  color: white;
-  border-radius: 15px
-}
-
-.texto-enlace {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  color: #79747e;
-}
-
-.logout-btn {
-  background-color: #e53935;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 75%;
-  cursor: pointer;
-  border-radius: 8px;
-  width: 100%
 }
 
 .content {

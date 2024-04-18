@@ -1,58 +1,48 @@
 <template>
-  <input v-model="search" placeholder="Buscar por título" class="buscador" /> <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
-  <header><h1 class="titulo"><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="32" height="32" viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round" stroke-linejoin="round">
-  <path stroke="none" d="M0 0h24v24H0z" fill="none"/>
-  <path d="M4 7l16 0" />
-  <path d="M10 11l0 6" />
-  <path d="M14 11l0 6" />
-  <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-  <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-</svg> Eliminados</h1></header>
-
+  <input v-model="search" placeholder="Buscar por título" class="buscador" />
+  <div class="lupa">
+    <button class="butlupa"><i class="bi bi-search"></i></button>
+  </div>
+  <header>
+    <h1 class="titulo">
+      <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="32" height="32"
+        viewBox="0 0 24 24" stroke-width="1.5" stroke="#2c3e50" fill="none" stroke-linecap="round"
+        stroke-linejoin="round">
+        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+        <path d="M4 7l16 0" />
+        <path d="M10 11l0 6" />
+        <path d="M14 11l0 6" />
+        <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+        <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+      </svg>
+      Eliminados
+    </h1>
+  </header>
+  
+  <Sidebar/>
   <div class="container">
-    <div class="sidebar" style="position: fixed;">
-      <h1 class="Menu">Menú</h1>
-      <ul class="links">
-        <br />
-        <div class="letras">
-          <RouterLink :to="{ name: 'home' }" style="color: #002b66;"><i class="bi bi-journal-text"></i>  Notas </RouterLink>
-          <br />
-          <RouterLink :to="{ name: 'favoritos' }" style="color: #002b66;"> <i class="bi bi-star"></i>  Notas Favoritas </RouterLink>
-          <br />
-          <button class="Papelera">
-            <RouterLink :to="{ name: 'papelera' }" style="color: white;">
-              <h2><i class="bi bi-trash3"></i> Papelera</h2>
-            </RouterLink>
-          </button>
-          <br />
-          <RouterLink :to="{ name: 'archivados' }" style="color: #002b66;"> <i class="bi bi-archive"></i> Notas Archivadas </RouterLink>
-          <br />
-          <button class="logout-btn" @click="cerrarSesion">Cerrar sesión</button>
-        </div>
-        <br />
-      </ul>
-    </div>
-
     <div class="notes-list">
       <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
-
-          <button @click="restaurarNota(nota)"><svg xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-rotate" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="#00165F" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
-            </svg></button>
-          <button @click="eliminarNotaPermanentemente(nota)"><svg xmlns="http://www.w3.org/2000/svg"
-              class="icon icon-tabler icon-tabler-trash" width="16" height="16" viewBox="0 0 24 24" stroke-width="1.5"
-              stroke="#00165F" fill="none" stroke-linecap="round" stroke-linejoin="round">
-              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-              <path d="M4 7l16 0" />
-              <path d="M10 11l0 6" />
-              <path d="M14 11l0 6" />
-              <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
-              <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-            </svg></button>
-
+        <button @click="restaurarNota(nota)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-rotate" width="16" height="16"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#00165F" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M19.95 11a8 8 0 1 0 -.5 4m.5 5v-5h-5" />
+          </svg>
+        </button>
+        <button @click="eliminarNotaPermanentemente(nota)">
+          <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-trash" width="16" height="16"
+            viewBox="0 0 24 24" stroke-width="1.5" stroke="#00165F" fill="none" stroke-linecap="round"
+            stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 7l16 0" />
+            <path d="M10 11l0 6" />
+            <path d="M14 11l0 6" />
+            <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+            <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+          </svg>
+        </button>
         <h3>{{ nota.title }}</h3>
         <p>{{ nota.content }}</p>
         <div>{{ formatFecha(nota.date) }}</div>
@@ -66,7 +56,8 @@ import { onMounted, ref } from 'vue'
 import Swal from 'sweetalert2'
 import { db, auth } from '../main'
 import { computed } from 'vue'
-import { format } from 'date-fns'
+import { format } from 'date-fns';
+import Sidebar from './Sidebar.vue';
 
 const trashCollection = db.collection('trash');
 const notesCollection = db.collection('notes');
@@ -187,34 +178,6 @@ const eliminarNotaPermanentemente = (nota) => {
   border-radius: 8px;
 }
 
-.sidebar {
-  background-color: #6aa8ff;
-  color: white;
-  padding: 150px;
-  width: 60px;
-  max-width: none;
-  height: 100%;
-  top: 80px;
-  left: -10px;
-  position: absolute;
-  margin-top: -80px;
-}
-
-.Papelera {
-  background-color: rgb(0, 22, 95);
-  border-radius: 8px;
-}
-
-.logout-btn {
-  background-color: #e53935;
-  color: white;
-  border: none;
-  padding: 10px 20px;
-  margin-top: 20px;
-  cursor: pointer;
-  border-radius: 8px;
-}
-
 .content {
   padding: 20px;
   flex: 1;
@@ -247,23 +210,6 @@ const eliminarNotaPermanentemente = (nota) => {
 
 }
 
-
-.container .sidebar .Menu {
-  align-items: end;
-  position: relative;
-  left: -60px;
-  top: -20px;
-  font-size: 3rem;
-}
-
-.letras {
-  font-size: 1.5rem;
-  margin-left: -130px;
-  display: grid;
-  text-align: justify;
-  white-space: nowrap;
-}
-
 .card {
   padding: 40px;
   border: 1px solid #ccc;
@@ -273,9 +219,9 @@ const eliminarNotaPermanentemente = (nota) => {
 
 }
 
-.card h3{
-font-weight: bold;
-color: rgb(0, 22, 95);
+.card h3 {
+  font-weight: bold;
+  color: rgb(0, 22, 95);
 
 }
 
@@ -286,7 +232,7 @@ color: rgb(0, 22, 95);
   font-size: 2rem;
   position: fixed;
   top: 10px;
-  left: 200px; 
+  left: 200px;
 }
 
 .buscador {
@@ -320,44 +266,7 @@ color: rgb(0, 22, 95);
   margin-right: -20px;
 }
 
-@media (min-width: 576px) {
-  .container {
-    max-width: 540px;
-  }
+.bi-star {
+  color: yellow;
 }
-
-@media (min-width: 768px) {
-  .container {
-    max-width: 720px;
-  }
-}
-
-@media (min-width: 992px) {
-  .container {
-    max-width: 960px;
-  }
-}
-
-@media (min-width: 1200px) {
-  .container {
-    max-width: 1140px;
-  }
-}
-
-.sidebar {
-  width: 100%;
-}
-
-@media (min-width: 992px) {
-  .sidebar {
-    width: 25%;
-    position: fixed;
-  }
-
-}
-
-.bi-star{
-    color: yellow;
-}
-
 </style>
