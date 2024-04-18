@@ -1,6 +1,10 @@
 <template>
   <div class="container">
+
+    <div class="sidebar">
     <Sidebar/>
+    </div>
+
     <div class="main-content">
       <div class="content">
         <div class="card">
@@ -294,34 +298,73 @@ const toggleFavorite = (nota) => {
 
 <style scoped>
 
-.container {
+body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+
+
+.notas {
+  background-color: #203562;
+  border-radius: 10px;
+  padding: 10px;
   width: 100%;
-  padding: 0 15px;
-  margin: 0 auto;
+}
+
+.exep-notas i {
+  color: #79747e;
+}
+
+.enlace-router {
+  color: white;
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  text-decoration: none;
+}
+
+.texto-enlace {
+  font-weight: 400;
+  color: #79747e;
+}
+
+.logout-btn {
+  background-color: #e53935;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  margin-top: 75%;
+  cursor: pointer;
+  border-radius: 8px;
+  width: 100%;
+}
+
+
+.main-content {
+  flex: 1;
+  margin-left: 25%;
+  padding: 15px;
+  box-sizing: border-box;
   overflow-y: auto;
 }
 
-.main-content{
-  position: absolute;
-}
-
 .content {
-  margin-left: 15%;
   margin-top: 3%;
-  position: absolute;
-  width: 75%;
+  position: relative;
+  width: 100%;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-}
-
-.new-note {
-  background-color: white;
+  background-color: #ffffff;
   padding: 20px;
 }
 
-.new-note h2{
-  font-family: "Poppins", sans-serif;
+.new-note h2 {
   font-weight: 600;
-  font-style: normal;
 }
 
 .new-note input,
@@ -341,23 +384,25 @@ const toggleFavorite = (nota) => {
   border-radius: 8px;
 }
 
-.container-searchbar{
+
+.container-searchbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-top: 30%;
+  margin-top: 30px;
 }
 
 .search-bar {
   display: flex;
   align-items: center;
-  margin-left: 77%;
+  margin-left: auto;
 }
 
 .search-bar input.buscador {
   flex: 1;
   margin: 15px;
   border-radius: 20px;
+  padding: 10px;
 }
 
 .search-icon {
@@ -373,23 +418,21 @@ const toggleFavorite = (nota) => {
   border-radius: 100px;
 }
 
+
 .notes-list {
   display: flex;
-  flex-flow: row wrap;
+  flex-wrap: wrap;
   justify-content: center;
-  margin-left: 13.5%;
+  margin-top: 20px;
 }
 
 .notes-list .card {
-  padding: 20px;
-  width: calc(25% - 20px);
-  max-height: 20%;
-  margin-right: 10px;
+  flex-basis: calc(25% - 20px);
+  margin-right: 20px;
   margin-bottom: 20px;
-  font-family: "Poppins", sans-serif;
-  font-weight: 400;
-  font-style: normal;
+  padding: 20px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
 }
 
 .notes-list .card .icons button {
@@ -404,21 +447,29 @@ const toggleFavorite = (nota) => {
   gap: 20px;
 }
 
-
 .title-icons {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.icons i{
+.icons i {
   display: flex;
   justify-content: flex-end;
   margin-left: auto;
   box-shadow: none;
 }
 
-@media screen and (max-width: 480px) and (min-width: 320px) {
+
+@media screen and (max-width: 1200px) {
+  .wrapper {
+    flex-direction: column;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
   .sidebar {
     width: 100%;
     position: relative;
@@ -426,86 +477,56 @@ const toggleFavorite = (nota) => {
     height: auto;
   }
 
-  .main-content {
-    margin-left: 0;
-    padding-left: 0;
+  .logout-btn {
+    margin-top: 20px;
   }
 
   .content {
-    margin-left: 0;
     width: 100%;
-  }
-
-  .container-searchbar {
-    margin-top: 100%;
-    display: flex;
-    align-items: center;
-    margin-left: 15%;
-  }
-
-  .search-bar {
-    margin-left: 0;
-    justify-content: center;
-  }
-
-  .notes-list {
-    margin-left: 0;
-    width: 100%;
-    margin-top: 10%;
+    margin-top: 20px;
   }
 
   .notes-list .card {
-    width: calc(100% - 20px);
-  }
-
-  .new-note {
-    margin-bottom: 20px;
+    flex-basis: calc(50% - 20px);
   }
 }
 
-@media screen and (max-width: 1280px) and (max-height: 720px) {
-  .sidebar {
+@media screen and (max-width: 768px) {
+  .search-bar {
+    margin-left: 0;
+  }
+
+  .notes-list .card {
+    flex-basis: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .sidebar,
+  .main-content {
     width: 100%;
     position: relative;
     padding: 20px;
     height: auto;
   }
 
-  .main-content {
-    margin-left: 0;
-    padding-left: 0;
-  }
-
   .content {
-    margin-left: 0;
-    width: 100%;
-  }
-
-  .container-searchbar {
-    margin-top: 10px;
-    display: flex;
-    align-items: center;
-    margin-top: 30%;
-    margin-left: 75%;
-  }
-
-  .search-bar {
-    margin-left: 0;
-    justify-content: center;
-  }
-
-  .notes-list {
-    margin-left: 0;
-    width: 100%;
+    margin-top: 20px;
   }
 
   .notes-list .card {
-    width: calc(100% - 20px);
+    flex-basis: calc(100% - 20px);
   }
 
-  .new-note {
-    margin-bottom: 20px;
+  .container-searchbar {
+    margin-top: 50px;
+    margin-left: auto;
+  }
+
+  .search-bar {
+    justify-content: center;
   }
 }
+
 
 </style>
