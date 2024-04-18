@@ -115,8 +115,11 @@ let notaActual = ref(null);
 const router = useRouter();
 const search = ref('');
 let unsubscriber;
+
+
 let formatFecha = (fecha) => {
-  return format(fecha, 'dd/MM/yyyy HH:mm');
+  let dateObject = new Date(fecha);
+  return format(dateObject, 'dd/MM/yyyy HH:mm');
 }
 
 // Inicializar Quill
