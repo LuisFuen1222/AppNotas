@@ -88,6 +88,7 @@
             </div>
           </div>
           <p>{{ nota.content }}</p>
+          <div>{{ formatFecha(nota.date) }}</div>
         </div>
       </div>
     </div>
@@ -101,6 +102,7 @@ import { db, auth } from '../main'
 import Swal from 'sweetalert2'
 import { useRouter } from 'vue-router'
 import { computed } from 'vue'
+import { format } from 'date-fns'
 
 const tituloNota = ref('');
 const notas = ref([]);
@@ -113,12 +115,16 @@ let notaActual = ref(null);
 const router = useRouter();
 const search = ref('');
 let unsubscriber;
+let formatFecha = (fecha) => {
+  return format(fecha, 'dd/MM/yyyy HH:mm');
+}
 
 // Inicializar Quill
 onMounted(() => {
   quill = new Quill('#quill-editor', {
     theme: 'snow'
   })
+
 
   unsubscriber = auth.onAuthStateChanged(user => {
     if (user) {
@@ -152,7 +158,8 @@ const guardarNota = () => {
 
     notesCollection.doc(notaActual.value.id).update({
       title: tituloNota.value,
-      content: contenido
+      content: contenido,
+      date: Date.now()
     })
       .then(() => {
         console.log('Nota actualizada exitosamente');
@@ -168,7 +175,8 @@ const guardarNota = () => {
     notesCollection.add({
       title: tituloNota.value,
       content: contenido,
-      user: auth.currentUser.uid
+      user: auth.currentUser.uid,
+      date: Date.now()
     })
       .then(() => {
         console.log('Nota guardada exitosamente');

@@ -13,6 +13,7 @@
     "format": "prettier --write src/"
   },
   "dependencies": {
+    "date-fns": "^3.6.0",
     "firebase": "^10.11.0",
     "pinia": "^2.1.7",
     "quill": "^2.0.0-rc.5",
