@@ -106,7 +106,7 @@ const submitForm = async () => {
 
 .registration-form {
   width: 100%;
-  max-width: 400px;
+  max-width: 500px;
   padding: 20px;
   background-color: #e3e8f8;
   border-radius: 10px;
@@ -125,6 +125,7 @@ const submitForm = async () => {
 .subtitulo {
   margin-bottom: 20px;
   color: #666;
+  font-size: 17px;
 }
 
 .form-nombre {
@@ -149,7 +150,7 @@ const submitForm = async () => {
 }
 
 .form-datos input {
-  width: 95%;
+  width: 100%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -173,7 +174,7 @@ const submitForm = async () => {
 
 
 .register-link {
-  margin-left: 87px;
+  margin-left: 102px;
   color: navy;
   text-decoration: underline;
   cursor: pointer;
