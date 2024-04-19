@@ -47,7 +47,7 @@
             </div>
             </div>
           </div>
-          <p>{{ nota.content }}</p>
+          <p v-html="nota.content"></p>
           <div>{{ formatFecha(nota.date) }}</div>
         </div>
       </div>
@@ -78,18 +78,33 @@ const router = useRouter();
 const search = ref('');
 let unsubscriber;
 
-const exportarNotaAPdf = (nota) => {
+const exportarNotaAPdf = async (nota) => {
   if (nota === null) {
     console.log('Error: La nota es null');
     return;
   }
-  const doc = new jsPDF();
-  const title = nota.title.replace(/\n/g, ' ');
-  const content = nota.content.replace(/\n/g, ' ');
-  doc.text(title, 10, 10);
-  doc.text(content, 10, 20);
-  doc.save(`${title}.pdf`);
+
+  const result = await Swal.fire({
+    title: 'Confirmación',
+    text: '¿Estás seguro de que quieres descargar el PDF?',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Sí, descargar',
+    cancelButtonText: 'No, cancelar'
+  });
+
+  if (result.isConfirmed) {
+    const doc = new jsPDF();
+    const title = nota.title.replace(/\n/g, ' ');
+    const content = document.createElement('div');
+    content.innerHTML = nota.content;
+    const plainTextContent = content.innerText.replace(/\n/g, ' ');
+    doc.text(title, 10, 10);
+    doc.text(plainTextContent, 10, 20);
+    doc.save(`${title}.pdf`);
+  }
 }
+
 const formatFecha = (fecha) => {
   if (fecha) {
     const dateObject = new Date(fecha);
@@ -108,13 +123,12 @@ onMounted(() => {
   quill = new Quill('#quill-editor', {
     theme: 'snow'
   })
-
-
   unsubscriber = auth.onAuthStateChanged(user => {
     if (user) {
       notesCollection.where('user', '==', user.uid)
         .onSnapshot((snapshot) => {
           notas.value = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+          notas.value.sort((a, b) => b.createdAt - a.createdAt);
         }, (error) => {
           console.error('Error al obtener las notas: ', error);
         });
@@ -123,7 +137,6 @@ onMounted(() => {
     }
   });
 })
-
 const FiltrarNotas = computed(() => {
   if (!search.value) {
     return notas.value;
@@ -131,45 +144,44 @@ const FiltrarNotas = computed(() => {
   return notas.value.filter(nota => nota.title.toLowerCase().includes(search.value.toLowerCase()));
 });
 
-
 const guardarNota = () => {
-  const contenido = quill.getText().trim();
+  const contenido = quill.root.innerHTML.trim();
+
   if (contenido === '') {
     Swal.fire('Error', 'El contenido de la nota no puede estar vacío', 'error');
     return;
   }
-  if (notaActual.value) {
 
+  if (notaActual.value) {
     notesCollection.doc(notaActual.value.id).update({
       title: tituloNota.value,
       content: contenido,
       date: Date.now()
     })
-      .then(() => {
-        console.log('Nota actualizada exitosamente');
-        tituloNota.value = '';
-        quill.setText('');
-        notaActual.value = null;
-      })
-      .catch((error) => {
-        console.error('Error al actualizar la nota: ', error);
-      });
+    .then(() => {
+      console.log('Nota actualizada exitosamente');
+      tituloNota.value = '';
+      quill.setText('');
+      notaActual.value = null;
+    })
+    .catch((error) => {
+      console.error('Error al actualizar la nota: ', error);
+    });
   } else {
-
     notesCollection.add({
       title: tituloNota.value,
-      content: contenido,
+      content: contenido, 
       user: auth.currentUser.uid,
       date: Date.now()
     })
-      .then(() => {
-        console.log('Nota guardada exitosamente');
-        tituloNota.value = '';
-        quill.setText('');
-      })
-      .catch((error) => {
-        console.error('Error al guardar la nota: ', error);
-      });
+    .then(() => {
+      console.log('Nota guardada exitosamente');
+      tituloNota.value = '';
+      quill.setText('');
+    })
+    .catch((error) => {
+      console.error('Error al guardar la nota: ', error);
+    });
   }
 }
 
