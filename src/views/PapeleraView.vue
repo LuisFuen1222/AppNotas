@@ -51,8 +51,8 @@
           </svg>
         </button>
       </div>
-        <h3>{{ nota.title }}</h3>
-        <p>{{ nota.content }}</p>
+        <h3 v-html="nota.title"></h3>
+        <p v-html="nota.content"></p>
         <div>{{ formatFecha(nota.date) }}</div>
       </div>
       </div>
