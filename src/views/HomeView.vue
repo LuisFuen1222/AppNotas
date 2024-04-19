@@ -30,8 +30,6 @@
       <div class="notes-list">
         <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
           <div class="note-content">
-            <div class="title-icons">
-            <h4>{{ nota.title }}</h4>
             <div class="icons">
               <button @click="toggleFavorite(nota)">
               <i
@@ -45,8 +43,8 @@
               <button @click="archivarNota(nota)"><i class="bi bi-archive"></i></button>
               <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
             </div>
-            </div>
           </div>
+          <h4>{{ nota.title }}</h4>
           <p v-html="nota.content"></p>
           <div>{{ formatFecha(nota.date) }}</div>
         </div>
@@ -483,6 +481,8 @@ h1, h2, h3, h4, h5, h6 {
   justify-content: flex-end;
   margin-left: auto;
   box-shadow: none;
+  align-items: center;
+  justify-content: space-between;
 }
 
 
