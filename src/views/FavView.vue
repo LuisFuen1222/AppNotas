@@ -28,7 +28,6 @@
           </button></button>
         <button @click="moverNotaATrash(nota)"><i class="bi bi-trash3"></i></button>
         <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
-        <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
         </div>
         <h3>{{ nota.title }}</h3>
         <p>{{ nota.content }}</p>
