@@ -1,19 +1,35 @@
 <template>
-    <input v-model="search" placeholder="Buscar por título" class="buscador" /> <div class="lupa"><button class="butlupa"><i class="bi bi-search"></i></button></div>
+  <div class="container">
+    <div class="container-searchbar">
+        <div class="search-bar">
+          <input v-model="search" placeholder="Buscar por título" class="buscador" />
+          <div class="search-icon">
+            <button class="butlupa"><i class="bi bi-search"></i></button>
+          </div>
+        </div>   
+      </div>
+    
     <header><h1 class="titulo"> <i class="bi bi-archive"></i> Archivados</h1></header>
-    <div class="container">
-      <Sidebar/>
+    
+
+    <Sidebar/>
+    <div class="main-content">
       <div class="notes-list">
         <div v-for="nota in FiltrarNotas" :key="nota.title" class="card">
+          <div class="note-content"></div>
+          <div class="icons">
             <button @click="restaurarNota(nota)"><i class="bi bi-arrow-clockwise"></i></button>
             <button @click="moverNotaATrash(nota)"><i class="bi bi-trash3"></i></button>  
             <button @click="exportarNotaAPdf(nota)"><i class="bi bi-filetype-pdf"></i></button>
+          </div>
           <h3>{{ nota.title }}</h3>
           <p>{{ nota.content }}</p>
           <div>{{ formatFecha(nota.date) }}</div>
         </div>
+        </div>
       </div>
     </div>
+
   </template>
   
   <script setup type="ts">
@@ -156,156 +172,244 @@
   </script>
   
   <style scoped>
-  .container {
-    width: 100%;
-    padding: 0 15px;
-    margin: 0 auto;
-  }
-  
-  .boton {
-    background-color: #6aa8ff;
-    color: white;
-    border: none;
-    cursor: pointer;
-    padding: 10px 20px;
-    border-radius: 8px;
-  }
-  
-  .content {
-    padding: 20px;
-    flex: 1;
-  }
-  
-  .new-note {
-    background-color: white;
-    padding: 20px;
-    margin-bottom: 20px;
-  }
-  
-  
-  .new-note input,
-  .new-note textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    box-sizing: border-box;
-  }
-  
-  .notes-list {
-    background-color: white;
-    padding: 60px;
-    display: grid;
-    gap: 50px;
-    grid-template-columns: repeat(3, 1fr);
-    justify-content: space-around;
-    margin-left: 250px;
-    align-items: end;
-  
-  }
-  
-  
-  .container .sidebar .Menu {
-    align-items: end;
-    position: relative;
-    left: -60px;
-    top: -20px;
-    font-size: 3rem;
-  }
-  
-  .card {
-    padding: 40px;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 7px;
-    color: black;
-  
-  }
-  
-  .card h3{
-  font-weight: bold;
-  color: rgb(0, 22, 95);
-  
-  }
-  
-  .titulo {
-    margin-bottom: 25px;
-    margin-left: 300px;
-    color: rgb(0, 22, 95);
-    font-size: 2rem;
-    position: fixed;
-    top: 10px;
-    left: 200px; 
-  }
-  
-  .buscador {
-    margin-left: 300px;
-    margin-top: 20px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    width: 300px;
-    top: 10px;
-    position: fixed;
-    left: 1200px;
-  }
-  
-  .lupa {
-    right: 80px;
-    top: 25px;
-    font-size: 1.5rem;
-    position: absolute;
-    display: flex;
-  }
+  body {
+  font-family: 'Poppins', sans-serif;
+  margin: 0;
+  padding: 0;
+}
 
-  .butlupa {
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+}
+
+
+.main-content {
+  flex: 1;
+  margin-left: 25%;
+  padding: 15px;
+  box-sizing: border-box;
+  overflow-y: auto;
+}
+
+.content {
+  margin-top: 3%;
+  position: relative;
+  width: 100%;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+  padding: 20px;
+}
+
+.boton {
+  background-color: #6aa8ff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  padding: 10px 20px;
+  border-radius: 8px;
+}
+
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.notes-list .card {
+  flex-basis: calc(25% - 20px);
+  margin-right: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+}
+
+.notes-list .card .icons button {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.note-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title-icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icons i {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  box-shadow: none;
+}
+
+
+.titulo {
+  margin-bottom: 25px;
+  margin-left: 300px;
+  color: rgb(0, 22, 95);
+  font-size: 2rem;
+  position: fixed;
+  top: 10px;
+  left: 200px;
+}
+
+.container-searchbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 30px;
+  margin-right: 59px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+.search-bar input.buscador {
+  flex: 1;
+  margin: 15px;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.search-icon {
+  display: flex;
+}
+
+.butlupa {
   background-color: #002559;
   color: rgb(255, 255, 255);
   border: none;
-  padding: 15px 20px;
+  padding: 10px 15px;
   cursor: pointer;
   border-radius: 100px;
-  margin-top: 0px;
-  margin-right: -20px;
 }
-  
-  @media (min-width: 576px) {
-    .container {
-      max-width: 540px;
-    }
-  }
-  
-  @media (min-width: 768px) {
-    .container {
-      max-width: 720px;
-    }
-  }
-  
-  @media (min-width: 992px) {
-    .container {
-      max-width: 960px;
-    }
-  }
-  
-  @media (min-width: 1200px) {
-    .container {
-      max-width: 1140px;
-    }
-  }
-  
-  .sidebar {
-    width: 100%;
-  }
-  
-  @media (min-width: 992px) {
-    .sidebar {
-      width: 25%;
-      position: fixed;
-    }
-  
+
+
+.notes-list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.notes-list .card {
+  flex-basis: calc(25% - 20px);
+  margin-right: 20px;
+  margin-bottom: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  background-color: #ffffff;
+}
+
+.notes-list .card .icons button {
+  background-color: transparent;
+  box-shadow: none;
+  border: none;
+}
+
+.note-content {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.title-icons {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.icons i {
+  display: flex;
+  justify-content: flex-end;
+  margin-left: auto;
+  box-shadow: none;
+}
+
+
+
+
+.bi-star {
+  color: yellow;
+}
+
+@media screen and (max-width: 1200px) {
+  .wrapper {
+    flex-direction: column;
   }
 
-  .bi-star{
-    color: yellow;
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    width: 100%;
+    position: relative;
+    padding: 20px;
+    height: auto;
+  }
+
+  .logout-btn {
+    margin-top: 20px;
+  }
+
+  .content {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .notes-list .card {
+    flex-basis: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .search-bar {
+    margin-left: 0;
+  }
+
+  .notes-list .card {
+    flex-basis: calc(50% - 20px);
+  }
+}
+
+@media screen and (max-width: 480px) {
+  .sidebar,
+  .main-content {
+    width: 100%;
+    position: relative;
+    padding: 20px;
+    height: auto;
+  }
+
+  .content {
+    margin-top: 20px;
+  }
+
+  .notes-list .card {
+    flex-basis: calc(100% - 20px);
+  }
+
+  .container-searchbar {
+    margin-top: 50px;
+    margin-left: auto;
+  }
+
+  .search-bar {
+    justify-content: center;
+  }
 }
 
   </style>
